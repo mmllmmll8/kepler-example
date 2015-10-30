@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/listitem"
+	android:layout_height="wrap_content" 
+	android:layout_width="wrap_content"
+	android:background="@android:color/white"> 
+	
+	<TextView
+	    android:id="@+id/Itemtitle"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textColor="@android:color/black"
+	    android:text="位置"
+	    android:textSize="20dp" />
+
+ 	<TextView
+ 	    android:id="@+id/ItemText"
+ 	    android:layout_width="wrap_content"
+ 	    android:layout_height="wrap_content"
+ 	    android:layout_alignParentLeft="true"
+ 	    android:textColor="@android:color/black"
+ 	    android:layout_below="@+id/Itemtitle"
+ 	    android:text="local"
+ 	    android:textSize="30dp"/>
+
+ 	<TextView
+ 	    android:id="@+id/time"
+ 	    android:layout_width="wrap_content"
+ 	    android:layout_height="wrap_content"
+ 	    android:layout_alignParentRight="true"
+ 	    android:layout_centerVertical="true"
+ 	    android:textColor="@android:color/black"
+ 	    android:text="时间"
+ 	    android:textSize="25dp" />
+
+</RelativeLayout>
