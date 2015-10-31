@@ -42,12 +42,12 @@ public class Map_Activity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题
+		this.getWindow().setFlags(
+				WindowManager.LayoutParams.FLAG_FULLSCREEN,  
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
 		setContentView(R.layout.activity_map_);
 		ok = (Button)findViewById(R.id.buttonok);
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题
-        this.getWindow().setFlags(
-        		WindowManager.LayoutParams.FLAG_FULLSCREEN,  
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
         wm = (WindowManager) this.getWindowManager();
         mapView = (MapView) findViewById(R.id.map);
         Intent intent = this.getIntent();

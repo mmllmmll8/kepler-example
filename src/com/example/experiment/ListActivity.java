@@ -35,11 +35,11 @@ public class ListActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_list);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题
-        this.getWindow().setFlags(
-        		WindowManager.LayoutParams.FLAG_FULLSCREEN,  
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
+		this.getWindow().setFlags(
+				WindowManager.LayoutParams.FLAG_FULLSCREEN,  
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
+		setContentView(R.layout.activity_list);
         lv = (ListView)findViewById(R.id.lv);  
         //获取将要绑定的数据设置到data中  
         sharedpreference = getPreferences(MODE_PRIVATE);

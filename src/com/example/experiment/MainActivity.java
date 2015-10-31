@@ -20,13 +20,13 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        endbutton = (Button)findViewById(R.id.endbutton);
-        list = (Button)findViewById(R.id.listbutton);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题
         this.getWindow().setFlags(
         		WindowManager.LayoutParams.FLAG_FULLSCREEN,  
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
+        		WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
+        setContentView(R.layout.activity_main);
+        endbutton = (Button)findViewById(R.id.endbutton);
+        list = (Button)findViewById(R.id.listbutton);
         SharedPreferences sharepreference = getPreferences(MODE_PRIVATE);
         service_close = sharepreference.getBoolean("service_close", false);
         endbutton.setOnClickListener(new OnClickListener() {

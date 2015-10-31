@@ -17,11 +17,11 @@ public class StartActivity extends Activity {
 	@Override 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_start);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题
-        this.getWindow().setFlags(
-        		WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
+		this.getWindow().setFlags(
+				WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
+		setContentView(R.layout.activity_start);
         try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
