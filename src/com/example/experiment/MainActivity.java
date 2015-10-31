@@ -1,5 +1,9 @@
 package com.example.experiment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.example.kepler.service.MainService;
 
 import android.app.Activity;
@@ -31,6 +35,8 @@ public class MainActivity extends Activity {
         list = (Button)findViewById(R.id.listbutton);
         SharedPreferences sharepreference = getSharedPreferences("exam",0);
         service_close = sharepreference.getBoolean("service_close", true);
+        
+        
         if(service_close){
         	controlbutton.setText("¿ªÆô·þÎñ");
         }else{
