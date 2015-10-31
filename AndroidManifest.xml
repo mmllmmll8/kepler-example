@@ -24,7 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
-
+		<service 
+		    android:name="com.example.kepler.service.MainService"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >

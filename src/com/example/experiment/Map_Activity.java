@@ -88,7 +88,7 @@ public class Map_Activity extends Activity {
             @Override  
             public void onClick(DialogInterface dialog, int which) {  
                 // TODO Auto-generated method stub  
-            	SharedPreferences share = getPreferences(MODE_PRIVATE);
+            	SharedPreferences share = getSharedPreferences("exam",0);
 				String recs = share.getString("recs", "");
 				if(recs!=""){
 					try {

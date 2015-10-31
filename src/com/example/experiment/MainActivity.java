@@ -29,8 +29,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         controlbutton = (Button)findViewById(R.id.endbutton);
         list = (Button)findViewById(R.id.listbutton);
-        SharedPreferences sharepreference = getPreferences(MODE_PRIVATE);
-        service_close = sharepreference.getBoolean("service_close", false);
+        SharedPreferences sharepreference = getSharedPreferences("exam",0);
+        service_close = sharepreference.getBoolean("service_close", true);
         if(service_close){
         	controlbutton.setText("开启服务");
         }else{
@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
 				if(service_close){
 				   //buttontext改为关闭服务
 				   //重启服务 
-					Intent intent = new Intent(MainActivity.this,MainService.class);
+					Intent intent = new Intent(MainActivity.this,com.example.kepler.service.MainService.class);
 					startService(intent);
 					controlbutton.setText("关闭服务");
 				}else{
@@ -63,7 +63,6 @@ public class MainActivity extends Activity {
 				//启动list activity
 				Intent intent = new Intent(MainActivity.this,ListActivity.class);
 				startActivity(intent);
-				finish();
 			}
 		});
         

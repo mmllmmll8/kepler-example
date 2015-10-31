@@ -17,16 +17,15 @@ public class StartReceiver extends BroadcastReceiver	{
 		// TODO Auto-generated method stub
 		if (arg1.getAction().equals(ACTION))    
         {   
-			SharedPreferences sharedPreferences= arg0.getSharedPreferences("test",Activity.MODE_PRIVATE); 
+			//这边可以添加开机自动启动的应用程序代码   
+			//启动service
+			SharedPreferences sharedPreferences= arg0.getSharedPreferences("exam",0);
 			// 使用getString方法获得value，注意第2个参数是value的默认值 
-			String name =sharedPreferences.getString("name", ""); 
+			String name =sharedPreferences.getString("id", ""); 
 			if(name!=""){
-				arg0.startService(new Intent(arg0,MainService.class));//启动倒计时服务   
+				arg0.startService(new Intent(arg0,com.example.kepler.service.MainService.class));//启动倒计时服务   
 				Toast.makeText(arg0, "实验服务启动", Toast.LENGTH_LONG).show();
-				 //这边可以添加开机自动启动的应用程序代码   
-				 //启动service
-				 Intent intent = new Intent(arg0,MainService.class);
-				 arg0.startService(intent);
+				 
 			}  
         }   
 	}
