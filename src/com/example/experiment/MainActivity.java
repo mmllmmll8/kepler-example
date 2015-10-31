@@ -1,5 +1,7 @@
 package com.example.experiment;
 
+import com.example.kepler.service.MainService;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,7 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-	Button endbutton;
+	Button controlbutton;
 	Button list;
 	Boolean service_close; 
     @Override
@@ -25,11 +27,16 @@ public class MainActivity extends Activity {
         		WindowManager.LayoutParams.FLAG_FULLSCREEN,  
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
         setContentView(R.layout.activity_main);
-        endbutton = (Button)findViewById(R.id.endbutton);
+        controlbutton = (Button)findViewById(R.id.endbutton);
         list = (Button)findViewById(R.id.listbutton);
         SharedPreferences sharepreference = getPreferences(MODE_PRIVATE);
         service_close = sharepreference.getBoolean("service_close", false);
-        endbutton.setOnClickListener(new OnClickListener() {
+        if(service_close){
+        	controlbutton.setText("开启服务");
+        }else{
+        	controlbutton.setText("关闭服务");
+        }
+        controlbutton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
@@ -37,9 +44,13 @@ public class MainActivity extends Activity {
 				if(service_close){
 				   //buttontext改为关闭服务
 				   //重启服务 
+					Intent intent = new Intent(MainActivity.this,MainService.class);
+					startService(intent);
+					controlbutton.setText("关闭服务");
 				}else{
 				   //buttontext改为开始服务
 				   //发布广播关闭服务
+					controlbutton.setText("启动服务");
 				}
 			}
 		});

@@ -17,11 +17,12 @@ public class Register extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_register);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题
         this.getWindow().setFlags(
         		WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
+		setContentView(R.layout.activity_register);
+		
         phone = (EditText)findViewById(R.id.phonenumber);
         start = (Button)findViewById(R.id.star);
         start.setOnClickListener(new OnClickListener() {
@@ -31,6 +32,7 @@ public class Register extends Activity {
 				// TODO Auto-generated method stub
 				//启动service
 				//结束此界面转到主界面
+				
 			}
 		});
 	}

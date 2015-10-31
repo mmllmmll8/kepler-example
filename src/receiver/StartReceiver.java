@@ -1,5 +1,6 @@
 package receiver;
 
+import com.example.experiment.MainActivity;
 import com.example.kepler.service.MainService;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -22,10 +23,11 @@ public class StartReceiver extends BroadcastReceiver	{
 			if(name!=""){
 				arg0.startService(new Intent(arg0,MainService.class));//启动倒计时服务   
 				Toast.makeText(arg0, "实验服务启动", Toast.LENGTH_LONG).show();
+				 //这边可以添加开机自动启动的应用程序代码   
+				 //启动service
+				 Intent intent = new Intent(arg0,MainService.class);
+				 arg0.startService(intent);
 			}  
-            //这边可以添加开机自动启动的应用程序代码   
-			//启动service
         }   
 	}
-
 }
