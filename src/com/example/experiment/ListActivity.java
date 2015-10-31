@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -51,16 +52,16 @@ public class ListActivity extends Activity {
 			robject.put("loc", "四川大学");
 			JSONArray lbss = new JSONArray();
 	        lbsobject = new JSONObject();
-	        robject.put("lat", "30");
-	        robject.put("lng", "100");
+	        lbsobject.put("lat", "30");
+	        lbsobject.put("lng", "100");
 	        lbss.put(lbsobject); 
 	        lbsobject = new JSONObject();
-	        robject.put("lat", "30");
-	        robject.put("lng", "100");
+	        lbsobject.put("lat", "30");
+	        lbsobject.put("lng", "100");
 	        lbss.put(lbsobject);
 	        lbsobject = new JSONObject();
-	        robject.put("lat", "30");
-	        robject.put("lng", "100");
+	        lbsobject.put("lat", "30");
+	        lbsobject.put("lng", "100");
 	        lbss.put(lbsobject);
 	        robject.put("lbss",lbss.toString());
 	        robject.put("time", "2015-10-31");
@@ -70,17 +71,17 @@ public class ListActivity extends Activity {
 	        robject.put("loc", "四川大学");
 	        lbss = new JSONArray();
 	        lbsobject = new JSONObject();
-	        robject.put("lat", "30");
-	        robject.put("lng", "100");
+	        lbsobject.put("lat", "30");
+	        lbsobject.put("lng", "100");
 	        lbss.put(lbsobject); 
 	        lbsobject = new JSONObject();
-	        robject.put("lat", "30");
-	        robject.put("lng", "100");
+	        lbsobject.put("lat", "30");
+	        lbsobject.put("lng", "100");
 	        lbss.put(lbsobject);
 	        lbsobject = new JSONObject();
-	        robject.put("lat", "30");
-	        robject.put("lng", "100");
-	        lbss.put(lbsobject);
+	        lbsobject.put("lat", "30");
+	        lbsobject.put("lng", "100");
+	        lbss.put(lbsobject); 
 	        robject.put("lbss",lbss.toString());
 	        robject.put("time", "2015-10-31");
 	        jrecords.put(robject);
@@ -122,7 +123,13 @@ public class ListActivity extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				
+				Map<String,Object> mapinfo = data.get((int) arg3);
+				String info = (String) mapinfo.get("info");
+				Bundle bundle = new Bundle();
+				bundle.putString("info", info);
+				Intent intent = new Intent(ListActivity.this,Map_Activity.class);
+				intent.putExtras(bundle);
+				startActivity(intent);
 			}
 		});
 	}
@@ -139,6 +146,7 @@ public class ListActivity extends Activity {
 				map = new HashMap<String, Object>();
 	            map.put("loc", rec.getString("loc"));
 	            map.put("time", rec.getString("time"));
+	            map.put("info", rec.toString());
 	            list.add(map);
 				i++;
 			}

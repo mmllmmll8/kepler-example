@@ -32,7 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 public class Map_Activity extends Activity {
-	MapView mapView;
+	private MapView mapView;
 	private AMap aMap;
 	private WindowManager wm;
 	private LatLng latlng;
@@ -47,15 +47,19 @@ public class Map_Activity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN,  
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
 		setContentView(R.layout.activity_map_);
+		mapView = (MapView) findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);// 必须要写
+		init();
 		ok = (Button)findViewById(R.id.buttonok);
         wm = (WindowManager) this.getWindowManager();
-        mapView = (MapView) findViewById(R.id.map);
         Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
 		String info = bundle.getString("info");
         try {
 			jinfo = new JSONObject(info);//从intent传入的数据
-			lbsarray = jinfo.getJSONArray("lbss");
+			lbsarray = new JSONArray(jinfo.get("lbss").toString());
+			//lbsarray = jinfo.getJSONArray("lbss");
+			
 			latlng = new LatLng(
 					lbsarray.getJSONObject(0).getDouble("lat"),
 					lbsarray.getJSONObject(0).getDouble("lng"));
@@ -64,14 +68,16 @@ public class Map_Activity extends Activity {
 			e.printStackTrace();
 		}
         
-		init();
+		
         //初始化地图，把镜头移到固定的位置。
-		aMap.animateCamera(CameraUpdateFactory
-				.newLatLngZoom(
-						latlng, 
-						aMap.getMaxZoomLevel()-2),
-						1000,
-						null);
+		if(latlng!=null){
+			aMap.animateCamera(CameraUpdateFactory
+					.newLatLngZoom(
+							latlng, 
+							aMap.getMaxZoomLevel()-2),
+							1000,
+							null);			
+		}
 		
 		AlertDialog.Builder normalDia=new AlertDialog.Builder(Map_Activity.this);
         normalDia.setIcon(R.drawable.ic_launcher);  
