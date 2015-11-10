@@ -10,6 +10,7 @@ import com.amap.api.maps2d.Projection;
 import com.amap.api.maps2d.model.Circle;
 import com.amap.api.maps2d.model.CircleOptions;
 import com.amap.api.maps2d.model.LatLng;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -20,6 +21,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,7 +59,7 @@ public class Map_Activity extends Activity {
 		String info = bundle.getString("info");
         try {
 			jinfo = new JSONObject(info);//从intent传入的数据
-			lbsarray = new JSONArray(jinfo.get("lbss").toString());
+			lbsarray = new JSONArray(jinfo.get("lbsinfo").toString());
 			//lbsarray = jinfo.getJSONArray("lbss");
 			
 			latlng = new LatLng(
@@ -91,16 +93,18 @@ public class Map_Activity extends Activity {
             }  
         });  
         normalDia.setNegativeButton("是", new DialogInterface.OnClickListener() {  
-            @Override  
+            @SuppressLint("NewApi") @Override  
             public void onClick(DialogInterface dialog, int which) {  
                 // TODO Auto-generated method stub  
             	SharedPreferences share = getSharedPreferences("exam",0);
-				String recs = share.getString("recs", "");
+				String recs = share.getString("records", "");
 				if(recs!=""){
 					try {
 						JSONArray jrecs = new JSONArray(recs);//rec数组
 						JSONObject jrec = jrecs.getJSONObject(jinfo.getInt("index"));//取出点击项对应的记录
- 						JSONArray lbss = jrec.getJSONArray("lbss");//取出lbs数组
+						
+						jrecs.remove(jinfo.getInt("index"));
+						JSONArray lbss = new JSONArray(jrec.getString("lbsinfo"));//取出lbs数组
 						//构建新的lbs点
  						JSONObject real = new JSONObject();
 						int screenwidth = wm.getDefaultDisplay().getWidth();
@@ -113,9 +117,11 @@ public class Map_Activity extends Activity {
 						//更新lbs数组
 						lbss.put(real);
 						//更新rec内容
-						jrec.put("lbss", lbss);
+						jrec.put("lbsinfo", lbss.toString());
+						jrec.put("poiinfo", jrec.getString("poiinfo"));
+						jrec.put("date",  jrec.getString("date"));
 						//新建rec数组
-						String nrecs = share.getString("recs", "");
+						String nrecs = share.getString("nrecs", "");
 						JSONArray njrecs = null;
 						if(nrecs==""){
 							njrecs = new JSONArray();
@@ -125,9 +131,12 @@ public class Map_Activity extends Activity {
 						}
 						njrecs.put(jrec);
 						//提交rec
+						Log.e("nrecs", njrecs.toString());
 						Editor editor = share.edit();
 						editor.putString("nrecs", njrecs.toString());
+						editor.putString("records", jrecs.toString());
 						editor.commit();
+						finish();
 					} catch (JSONException e) {  
 						// TODO Auto-generated catch block
 						e.printStackTrace();

@@ -40,98 +40,7 @@ public class ListActivity extends Activity {
 		this.getWindow().setFlags(
 				WindowManager.LayoutParams.FLAG_FULLSCREEN,  
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏   
-		setContentView(R.layout.activity_list);
-        lv = (ListView)findViewById(R.id.lv);  
-        
-        JSONArray jrecords = new JSONArray();
-        
-        JSONObject robject = new JSONObject();
-        JSONObject jobject = null;
-        JSONObject lbsobject = null;
-        try {
-			robject.put("loc", "四川大学");
-			JSONArray lbss = new JSONArray();
-	        lbsobject = new JSONObject();
-	        lbsobject.put("lat", "30");
-	        lbsobject.put("lng", "100");
-	        lbss.put(lbsobject); 
-	        lbsobject = new JSONObject();
-	        lbsobject.put("lat", "30");
-	        lbsobject.put("lng", "100");
-	        lbss.put(lbsobject);
-	        lbsobject = new JSONObject();
-	        lbsobject.put("lat", "30");
-	        lbsobject.put("lng", "100");
-	        lbss.put(lbsobject);
-	        robject.put("lbss",lbss.toString());
-	        robject.put("time", "2015-10-31");
-	        jrecords.put(robject);
-	        
-	        robject = new JSONObject();
-	        robject.put("loc", "四川大学");
-	        lbss = new JSONArray();
-	        lbsobject = new JSONObject();
-	        lbsobject.put("lat", "30");
-	        lbsobject.put("lng", "100");
-	        lbss.put(lbsobject); 
-	        lbsobject = new JSONObject();
-	        lbsobject.put("lat", "30");
-	        lbsobject.put("lng", "100");
-	        lbss.put(lbsobject);
-	        lbsobject = new JSONObject();
-	        lbsobject.put("lat", "30");
-	        lbsobject.put("lng", "100");
-	        lbss.put(lbsobject); 
-	        robject.put("lbss",lbss.toString());
-	        robject.put("time", "2015-10-31");
-	        jrecords.put(robject);
-	        
-	        robject = new JSONObject();
-	        robject.put("loc", "四川大学");
-	        lbss = new JSONArray();
-	        lbsobject = new JSONObject();
-	        robject.put("lat", "30");
-	        robject.put("lng", "100");
-	        lbss.put(lbsobject); 
-	        lbsobject = new JSONObject();
-	        robject.put("lat", "30");
-	        robject.put("lng", "100");
-	        lbss.put(lbsobject);
-	        lbsobject = new JSONObject();
-	        robject.put("lat", "30");
-	        robject.put("lng", "100");
-	        lbss.put(lbsobject);
-	        robject.put("lbss",lbss.toString());
-	        robject.put("time", "2015-10-31");
-	        jrecords.put(robject);
-	        
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        //获取将要绑定的数据设置到data中  
-        sharedpreference = getSharedPreferences("exam", MODE_PRIVATE);
-        String records = sharedpreference.getString("records", jrecords.toString());
-        
-        data = getData(records);
-        MyAdapter adapter = new MyAdapter(this);
-        lv.setAdapter(adapter);  
-        lv.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				// TODO Auto-generated method stub
-				Map<String,Object> mapinfo = data.get((int) arg3);
-				String info = (String) mapinfo.get("info");
-				Bundle bundle = new Bundle();
-				bundle.putString("info", info);
-				Intent intent = new Intent(ListActivity.this,Map_Activity.class);
-				intent.putExtras(bundle);
-				startActivity(intent);
-			}
-		});
+		
 	}
 	
 	private List<Map<String, Object>> getData(String json)
@@ -143,9 +52,11 @@ public class ListActivity extends Activity {
 			int i = 0;
 			while(i<jsonarray.length()){
 				JSONObject rec = jsonarray.getJSONObject(i);
+				JSONArray POIS =new JSONArray(rec.getString("poiinfo"));
+				
 				map = new HashMap<String, Object>();
-	            map.put("loc", rec.getString("loc"));
-	            map.put("time", rec.getString("time"));
+	            map.put("loc", POIS.getJSONObject(0).get("name"));
+	            map.put("time", rec.getString("date"));
 	            map.put("info", rec.toString());
 	            list.add(map);
 				i++;
@@ -218,4 +129,110 @@ public class ListActivity extends Activity {
             return convertView;
         }
     }  
+
+    @Override
+    protected void onResume() {
+    	// TODO Auto-generated method stub
+    	super.onResume();
+    	setContentView(R.layout.activity_list);
+        lv = (ListView)findViewById(R.id.lv);  
+        
+        JSONArray jrecords = new JSONArray();
+        
+        JSONObject robject = new JSONObject();
+        JSONObject jobject = null;
+        JSONObject lbsobject = null;
+        
+        //获取将要绑定的数据设置到data中  
+        sharedpreference = getSharedPreferences("exam", MODE_PRIVATE);
+        String records = sharedpreference.getString("records", "");
+        
+        data = getData(records);
+        MyAdapter adapter = new MyAdapter(this);
+        lv.setAdapter(adapter);  
+        lv.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				Map<String,Object> mapinfo = data.get((int) arg3);
+				String info = (String) mapinfo.get("info");
+				JSONObject jinfo = null;
+				try {
+				    jinfo = new JSONObject(info);
+					jinfo.put("index", String.valueOf(arg3));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Bundle bundle = new Bundle();
+				bundle.putString("info", jinfo.toString());
+				Intent intent = new Intent(ListActivity.this,Map_Activity.class);
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}
+		});
+    }
 }
+//try {
+//	robject.put("loc", "四川大学");
+//	JSONArray lbss = new JSONArray();
+//    lbsobject = new JSONObject();
+//    lbsobject.put("lat", "30");
+//    lbsobject.put("lng", "100");
+//    lbss.put(lbsobject); 
+//    lbsobject = new JSONObject();
+//    lbsobject.put("lat", "30");
+//    lbsobject.put("lng", "100");
+//    lbss.put(lbsobject);
+//    lbsobject = new JSONObject();
+//    lbsobject.put("lat", "30");
+//    lbsobject.put("lng", "100");
+//    lbss.put(lbsobject);
+//    robject.put("lbss",lbss.toString());
+//    robject.put("time", "2015-10-31");
+//    jrecords.put(robject);
+//    
+//    robject = new JSONObject();
+//    robject.put("loc", "四川大学");
+//    lbss = new JSONArray();
+//    lbsobject = new JSONObject();
+//    lbsobject.put("lat", "30");
+//    lbsobject.put("lng", "100");
+//    lbss.put(lbsobject); 
+//    lbsobject = new JSONObject();
+//    lbsobject.put("lat", "30");
+//    lbsobject.put("lng", "100");
+//    lbss.put(lbsobject);
+//    lbsobject = new JSONObject();
+//    lbsobject.put("lat", "30");
+//    lbsobject.put("lng", "100");
+//    lbss.put(lbsobject); 
+//    robject.put("lbss",lbss.toString());
+//    robject.put("time", "2015-10-31");
+//    jrecords.put(robject);
+//    
+//    robject = new JSONObject();
+//    robject.put("loc", "四川大学");
+//    lbss = new JSONArray();
+//    lbsobject = new JSONObject();
+//    robject.put("lat", "30");
+//    robject.put("lng", "100");
+//    lbss.put(lbsobject); 
+//    lbsobject = new JSONObject();
+//    robject.put("lat", "30");
+//    robject.put("lng", "100");
+//    lbss.put(lbsobject);
+//    lbsobject = new JSONObject();
+//    robject.put("lat", "30");
+//    robject.put("lng", "100");
+//    lbss.put(lbsobject);
+//    robject.put("lbss",lbss.toString());
+//    robject.put("time", "2015-10-31");
+//    jrecords.put(robject);
+//    
+//} catch (JSONException e) {
+//	// TODO Auto-generated catch block
+//	e.printStackTrace();
+//}

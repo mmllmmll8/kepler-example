@@ -1,5 +1,7 @@
 package com.example.experiment;
 
+import com.example.kepler.service.MainService;
+
 import android.app.Activity;
 import android.app.backup.SharedPreferencesBackupHelper;
 import android.content.Intent;
@@ -16,12 +18,12 @@ public class StartActivity extends Activity {
 	StartActivity activity = null;
 	@Override 
 	protected void onCreate(Bundle savedInstanceState) {
+		
+		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题
 		this.getWindow().setFlags(
 				WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);//进行全屏 
-		super.onCreate(savedInstanceState);
-		  
 		setContentView(R.layout.activity_start);
 		final SharedPreferences share = this.getSharedPreferences("exam",0);
 		new Thread(new Runnable() {
@@ -37,6 +39,7 @@ public class StartActivity extends Activity {
 				}
 				
 		        String id = share.getString("id", "");
+		        boolean isclose = share.getBoolean("service_close", true);
 		        if(id==""){
 		        	//进入一个注册界面
 		        	Intent intent = new Intent(StartActivity.this,Register.class);
@@ -44,6 +47,10 @@ public class StartActivity extends Activity {
 		        	finish();
 		        }else{
 		        	//进入main_activity
+		        	if(isclose){
+		        		Intent intent = new Intent(StartActivity.this,MainService.class);
+			        	startService(intent);
+		        	}
 		        	Intent intent = new Intent(StartActivity.this,MainActivity.class);
 		        	startActivity(intent);
 		        	finish();

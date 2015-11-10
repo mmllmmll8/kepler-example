@@ -14,9 +14,10 @@
         android:id="@+id/buttonok"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/map"
+        android:layout_alignRight="@+id/imageView1"
         android:text="确定"
-        android:visibility="invisible" 
-        android:layout_alignBottom="@+id/map" />
+        android:visibility="visible" />
    
      <ImageView
         android:id="@+id/imageView1"
@@ -25,5 +26,5 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:src="@drawable/marker"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 </RelativeLayout>

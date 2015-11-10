@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         controlbutton = (Button)findViewById(R.id.endbutton);
         list = (Button)findViewById(R.id.listbutton);
-        SharedPreferences sharepreference = getSharedPreferences("exam",0);
+        final SharedPreferences sharepreference = getSharedPreferences("exam",0);
         service_close = sharepreference.getBoolean("service_close", true);
         
         
@@ -47,15 +47,26 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
+				service_close = sharepreference.getBoolean("service_close", true);
 				if(service_close){
 				   //buttontext改为关闭服务
 				   //重启服务 
-					Intent intent = new Intent(MainActivity.this,com.example.kepler.service.MainService.class);
+					Intent intent=new Intent(MainActivity.this,com.example.kepler.service.MainService.class);
+					intent.setAction("com.example.kepler.service.MainService");
 					startService(intent);
 					controlbutton.setText("关闭服务");
 				}else{
 				   //buttontext改为开始服务
 				   //发布广播关闭服务
+					Intent intent=new Intent(MainActivity.this,com.example.kepler.service.MainService.class);
+					intent.setAction("com.example.kepler.service.MainService");
+					boolean a = stopService(intent);
+					if(!a){
+						intent=new Intent(MainActivity.this,com.example.kepler.service.MainService.class);
+						intent.setAction("com.example.kepler.service.MainService");
+						startService(intent);
+						controlbutton.setText("关闭服务");
+					}
 					controlbutton.setText("启动服务");
 				}
 			}
