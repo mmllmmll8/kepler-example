@@ -36,10 +36,8 @@ public class MainActivity extends Activity {
         final SharedPreferences sharepreference = getSharedPreferences("exam",0);
         service_close = sharepreference.getBoolean("service_close", true);
         
-        
-        if(service_close){
-        	controlbutton.setText("开启服务");
-        }else{
+        if(service_close){        	
+        	startService(new Intent(this,com.example.kepler.service.MainService.class));
         	controlbutton.setText("关闭服务");
         }
         controlbutton.setOnClickListener(new OnClickListener() {
@@ -61,13 +59,15 @@ public class MainActivity extends Activity {
 					Intent intent=new Intent(MainActivity.this,com.example.kepler.service.MainService.class);
 					intent.setAction("com.example.kepler.service.MainService");
 					boolean a = stopService(intent);
-					if(!a){
+ 					if(!a){
 						intent=new Intent(MainActivity.this,com.example.kepler.service.MainService.class);
 						intent.setAction("com.example.kepler.service.MainService");
 						startService(intent);
 						controlbutton.setText("关闭服务");
 					}
-					controlbutton.setText("启动服务");
+					else{						
+						controlbutton.setText("启动服务");
+					}
 				}
 			}
 		});

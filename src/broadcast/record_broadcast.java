@@ -2,6 +2,7 @@ package broadcast;
 
 import java.util.List;
 
+import com.example.experiment.ListActivity;
 import com.example.experiment.R;
 
 import android.app.Notification;
@@ -22,7 +23,7 @@ public class record_broadcast {
 		 Notification notification = new Notification(icon,tickerText,when);
 	     CharSequence contentTitle = "New location!"; //通知栏标题
 		 CharSequence contentText = "New sites needed to be signed!"; //通知栏内容
-		 Intent notificationIntent = new Intent(context,List.class); //点击该通知后要跳转的Activity
+		 Intent notificationIntent = new Intent(context,ListActivity.class); //点击该通知后要跳转的Activity
 		 PendingIntent contentIntent = PendingIntent.getActivity(context,0,notificationIntent,0);
 		 notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 		 mNotificationManager.notify(0,notification);// TODO Auto-generated method stub
