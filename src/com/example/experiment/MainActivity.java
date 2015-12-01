@@ -4,9 +4,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tool.ServiceState;
+
 import com.example.kepler.service.MainService;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,7 +25,8 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 	Button controlbutton;
 	Button list;
-	Boolean service_close; 
+	boolean service_close = false;
+	Context context = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +37,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         controlbutton = (Button)findViewById(R.id.endbutton);
         list = (Button)findViewById(R.id.listbutton);
+        context = getApplicationContext();
         final SharedPreferences sharepreference = getSharedPreferences("exam",0);
-        service_close = sharepreference.getBoolean("service_close", true);
-        
+        service_close = !ServiceState.serviceisrunning(context);
         if(service_close){        	
         	startService(new Intent(this,com.example.kepler.service.MainService.class));
         	controlbutton.setText("关闭服务");
@@ -45,8 +49,8 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				service_close = sharepreference.getBoolean("service_close", true);
-				if(service_close){
+				service_close = !ServiceState.serviceisrunning(context);
+ 				if(service_close){
 				   //buttontext改为关闭服务
 				   //重启服务 
 					Intent intent=new Intent(MainActivity.this,com.example.kepler.service.MainService.class);

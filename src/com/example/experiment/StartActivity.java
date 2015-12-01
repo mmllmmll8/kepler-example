@@ -1,5 +1,7 @@
 package com.example.experiment;
 
+import tool.ServiceState;
+
 import com.example.kepler.service.MainService;
 
 import android.app.Activity;
@@ -20,6 +22,7 @@ public class StartActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
+		activity = this;
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题
 		this.getWindow().setFlags(
 				WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -39,7 +42,7 @@ public class StartActivity extends Activity {
 				}
 				
 		        String id = share.getString("id", "");
-		        boolean isclose = share.getBoolean("service_close", true);
+		        
 		        if(id==""){
 		        	//进入一个注册界面
 		        	Intent intent = new Intent(StartActivity.this,Register.class);
@@ -47,6 +50,7 @@ public class StartActivity extends Activity {
 		        	finish();
 		        }else{
 		        	//进入main_activity
+		        	boolean isclose = !ServiceState.serviceisrunning(activity);
 		        	if(isclose){
 		        		Intent intent = new Intent(StartActivity.this,MainService.class);
 			        	startService(intent);

@@ -1,5 +1,7 @@
 package com.example.experiment;
  
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +57,14 @@ public class ListActivity extends Activity {
 				JSONArray POIS =new JSONArray(rec.getString("poiinfo"));
 				
 				map = new HashMap<String, Object>();
-	            map.put("loc", POIS.getJSONObject(0).get("name"));
+				String name = "";
+				try {
+					name = URLDecoder.decode(POIS.getJSONObject(0).get("name").toString(),"utf-8");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            map.put("loc", name);
 	            map.put("time", rec.getString("date"));
 	            map.put("info", rec.toString());
 	            list.add(map);
@@ -137,12 +146,6 @@ public class ListActivity extends Activity {
     	setContentView(R.layout.activity_list);
         lv = (ListView)findViewById(R.id.lv);  
         
-        JSONArray jrecords = new JSONArray();
-        
-        JSONObject robject = new JSONObject();
-        JSONObject jobject = null;
-        JSONObject lbsobject = null;
-        
         //获取将要绑定的数据设置到data中  
         sharedpreference = getSharedPreferences("exam", MODE_PRIVATE);
         String records = sharedpreference.getString("records", "");
@@ -158,17 +161,10 @@ public class ListActivity extends Activity {
 				// TODO Auto-generated method stub
 				Map<String,Object> mapinfo = data.get((int) arg3);
 				String info = (String) mapinfo.get("info");
-				JSONObject jinfo = null;
-				try {
-				    jinfo = new JSONObject(info);
-					jinfo.put("index", String.valueOf(arg3));
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 				Bundle bundle = new Bundle();
-				bundle.putString("info", jinfo.toString());
-				Intent intent = new Intent(ListActivity.this,Map_Activity.class);
+				bundle.putString("info", info);
+				bundle.putInt("index", (int) arg3);
+				Intent intent = new Intent(ListActivity.this,CorrectActivity.class);
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
