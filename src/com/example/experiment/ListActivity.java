@@ -49,12 +49,30 @@ public class ListActivity extends Activity {
     {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();  
         Map<String, Object> map; 
-		try {
-			JSONArray jsonarray = new JSONArray(json);
+		
+			JSONArray jsonarray = null;
+			try {
+				jsonarray = new JSONArray(json);
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			int i = 0;
 			while(i<jsonarray.length()){
-				JSONObject rec = jsonarray.getJSONObject(i);
-				JSONArray POIS =new JSONArray(rec.getString("poiinfo"));
+				JSONObject rec = null;
+				try {
+					rec = jsonarray.getJSONObject(i);
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				JSONArray POIS = null;
+				try {
+					POIS = new JSONArray(rec.getString("poiinfo"));
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 				map = new HashMap<String, Object>();
 				String name = "";
@@ -63,17 +81,22 @@ public class ListActivity extends Activity {
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 	            map.put("loc", name);
-	            map.put("time", rec.getString("date"));
+	            try {
+					map.put("time", rec.getString("date"));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	            map.put("info", rec.toString());
 	            list.add(map);
 				i++;
 			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
         return list;
     }
 	
@@ -149,26 +172,27 @@ public class ListActivity extends Activity {
         //获取将要绑定的数据设置到data中  
         sharedpreference = getSharedPreferences("exam", MODE_PRIVATE);
         String records = sharedpreference.getString("records", "");
-        
-        data = getData(records);
-        MyAdapter adapter = new MyAdapter(this);
-        lv.setAdapter(adapter);  
-        lv.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				// TODO Auto-generated method stub
-				Map<String,Object> mapinfo = data.get((int) arg3);
-				String info = (String) mapinfo.get("info");
-				Bundle bundle = new Bundle();
-				bundle.putString("info", info);
-				bundle.putInt("index", (int) arg3);
-				Intent intent = new Intent(ListActivity.this,CorrectActivity.class);
-				intent.putExtras(bundle);
-				startActivity(intent);
-			}
-		});
+        if(records!=""){
+        	data = getData(records); 
+        	MyAdapter adapter = new MyAdapter(this);
+	        lv.setAdapter(adapter);  
+	        lv.setOnItemClickListener(new OnItemClickListener() {
+	
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+						long arg3) {
+					// TODO Auto-generated method stub
+					Map<String,Object> mapinfo = data.get((int) arg3);
+					String info = (String) mapinfo.get("info");
+					Bundle bundle = new Bundle();
+					bundle.putString("info", info);
+					bundle.putInt("index", (int) arg3);
+					Intent intent = new Intent(ListActivity.this,CorrectActivity.class);
+					intent.putExtras(bundle);
+					startActivity(intent);
+				}
+			});       	
+        }
     }
 }
 //try {

@@ -36,7 +36,10 @@ public class MainActivity extends Activity {
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);//½øÐÐÈ«ÆÁ   
         setContentView(R.layout.activity_main);
         controlbutton = (Button)findViewById(R.id.endbutton);
+//        Intent intent = new Intent(MainActivity.this,Map_Activity.class);
+//		startActivity(intent);
         list = (Button)findViewById(R.id.listbutton);
+        
         context = getApplicationContext();
         final SharedPreferences sharepreference = getSharedPreferences("exam",0);
         service_close = !ServiceState.serviceisrunning(context);

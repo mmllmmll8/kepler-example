@@ -54,22 +54,23 @@ public class Map_Activity extends Activity {
 		init();
 		ok = (Button)findViewById(R.id.buttonok);
         wm = (WindowManager) this.getWindowManager();
-        Intent intent = this.getIntent();
-		Bundle bundle = intent.getExtras();
-		String info = bundle.getString("info");
-        try {
-			jinfo = new JSONObject(info);//从intent传入的数据
-			lbsarray = new JSONArray(jinfo.get("lbsinfo").toString());
-			//lbsarray = jinfo.getJSONArray("lbss");
-			
-			latlng = new LatLng(
-					lbsarray.getJSONObject(0).getDouble("lat"),
-					lbsarray.getJSONObject(0).getDouble("lng"));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
+//        Intent intent = this.getIntent();
+//		Bundle bundle = intent.getExtras();
+//		String info = bundle.getString("info");
+//        try {
+//			jinfo = new JSONObject(info);//从intent传入的数据
+//			lbsarray = new JSONArray(jinfo.get("lbsinfo").toString());
+//			//lbsarray = jinfo.getJSONArray("lbss");
+//			
+//			latlng = new LatLng(
+//					lbsarray.getJSONObject(0).getDouble("lat"),
+//					lbsarray.getJSONObject(0).getDouble("lng"));
+//			
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+        latlng = new LatLng(30.557973,104.001632);
 		
         //初始化地图，把镜头移到固定的位置。
 		if(latlng!=null){
@@ -96,6 +97,12 @@ public class Map_Activity extends Activity {
             @SuppressLint("NewApi") @Override  
             public void onClick(DialogInterface dialog, int which) {  
                 // TODO Auto-generated method stub  
+            	int screenwidth = wm.getDefaultDisplay().getWidth();
+				int screenHeight = wm.getDefaultDisplay().getHeight();
+				Projection myProjection =aMap.getProjection();
+				Point leftPoint = new Point(screenwidth/2,screenHeight/2);
+				LatLng leftlatlng = myProjection.fromScreenLocation(leftPoint);
+				
             	SharedPreferences share = getSharedPreferences("exam",0);
 				String recs = share.getString("records", "");
 				if(recs!=""){
@@ -107,13 +114,9 @@ public class Map_Activity extends Activity {
 						JSONArray lbss = new JSONArray(jrec.getString("lbsinfo"));//取出lbs数组
 						//构建新的lbs点
  						JSONObject real = new JSONObject();
-						int screenwidth = wm.getDefaultDisplay().getWidth();
-						int screenHeight = wm.getDefaultDisplay().getHeight();
-						Projection myProjection =aMap.getProjection();
-						Point leftPoint = new Point(screenwidth/2,screenHeight/2);
-						LatLng leftlatlng = myProjection.fromScreenLocation(leftPoint);
 						real.put("lat", leftlatlng.latitude);
 						real.put("lng", leftlatlng.longitude);
+						
 						//更新lbs数组
 						lbss.put(real);
 						//更新rec内容
