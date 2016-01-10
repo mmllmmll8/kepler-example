@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Kepler</string>
+    <string name="ch_yes">是</string>
+    <string name="ch_no">不是</string>
+    <string name="en_yes">yes</string>
+    <string name="en_no">no</string>
+</resources>

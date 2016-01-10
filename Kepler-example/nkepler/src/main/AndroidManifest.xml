@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.mulewen.newkepler">
+    <application>
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="497b41583013ebec61a6f6d98a398c60"/>
+        <service
+            android:name=".service.MainService">
+            <intent-filter>
+                <action android:name="com.example.kepler.service.MainService" />
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>
