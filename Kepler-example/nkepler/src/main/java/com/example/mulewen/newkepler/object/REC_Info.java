@@ -1,5 +1,7 @@
 package com.example.mulewen.newkepler.object;
 
+import java.util.ArrayList;
+
 public class REC_Info {
 	//��λ�б�
 	//poi���б�
@@ -7,4 +9,6 @@ public class REC_Info {
 	String id;
 	String lbsinfo;
 	String poiinfo;
+	ArrayList<POI_Info> pois;
+	ArrayList<LBSInfo> lbss;
 }
