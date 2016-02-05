@@ -2,6 +2,7 @@ package com.example.mulewen.newkepler.LBS;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.json.JSONArray;
@@ -15,6 +16,12 @@ import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
 import com.amap.api.services.poisearch.PoiSearch.Query;
 import com.amap.api.services.poisearch.PoiSearch.SearchBound;
+import com.example.mulewen.newkepler.framework.Datacenter;
+import com.example.mulewen.newkepler.framework.Datashare;
+import com.example.mulewen.newkepler.framework.Records_info_mid;
+import com.example.mulewen.newkepler.object.LBSInfo;
+import com.example.mulewen.newkepler.object.POI_Info;
+import com.example.mulewen.newkepler.object.REC_Info;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -32,7 +39,7 @@ public class getpoi {
 			LatLonPoint point ,
 			String city,
 			final Context context){
-		Query query = new Query("", 
+		Query query = new Query("",
 				"050000|060000|070000|080000|090000|100000|120200|190400|" +
 				"110000|120000|130000|140000|150000|200000|190000|141200|" +
 				"050100|050200|050300|050400|050500|050600|050700|140500|" +
@@ -47,111 +54,82 @@ public class getpoi {
 				if(arg1 == 0){
 					if (arg0 != null&&arg0.getQuery()!=null) {
 						List<PoiItem> poiItems = arg0.getPois();
-						if(poiItems!=null){
+						REC_Info rec_info = new REC_Info();
+						Datacenter datacenter = Datacenter.getDatacenter(context);
+						Datashare share = datacenter.getshared();
+						if(poiItems!=null ){
+							//生成预存的rec数据
+							ArrayList<POI_Info> pois = new ArrayList<POI_Info>();
 							Iterator itr = poiItems.iterator();
-							SharedPreferences share = context.getSharedPreferences("exam",context.MODE_PRIVATE);
-							String records = share.getString("records", "");
-							JSONArray recs = null;
-							if(records==""){ 
-								recs = new JSONArray();
-							}else{
-								try {
-									recs = new JSONArray(records);
-								} catch (JSONException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
 							//poiinfo
-							JSONArray jarray = new JSONArray();
 							while (itr.hasNext()) {
-								JSONObject jobject = new JSONObject();
+								POI_Info poi = new POI_Info();
 								PoiItem nextObj = (PoiItem) itr.next();
+								poi.lat = nextObj.getLatLonPoint().getLatitude();
+								poi.lng = nextObj.getLatLonPoint().getLongitude();
+								poi.id = String.valueOf(nextObj.getPoiId());
 								try {
-									String value = String.valueOf(nextObj.getLatLonPoint().getLatitude());
-									jobject.put("lat", value);
-									value = String.valueOf(nextObj.getLatLonPoint().getLongitude());
-									jobject.put("lng", value);
-									try {
-										value = URLEncoder.encode(String.valueOf(nextObj.getTitle()),"utf-8");
-									} catch (UnsupportedEncodingException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									jobject.put("name", value);
-									value = String.valueOf(nextObj.getPoiId());
-									jobject.put("id", value);
-									try {
-										value = URLEncoder.encode(String.valueOf(nextObj.getTypeDes()),"utf-8");
-									} catch (UnsupportedEncodingException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									jobject.put("type", value);
-								} catch (JSONException e) {
+									poi.name = URLEncoder.encode(String.valueOf(nextObj.getTitle()),"utf-8");
+									poi.type = URLEncoder.encode(String.valueOf(nextObj.getTypeDes()),"utf-8");
+								} catch (UnsupportedEncodingException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								Log.e("poi",jobject.toString());
-								jarray.put(jobject);
+								pois.add(poi);
 							}
+							rec_info.pois = pois;
 							//lbsinfo
-							JSONArray lbss = new JSONArray();
-							
+							//取出定位信息
+
+							ArrayList<LBSInfo> lbss = new ArrayList<LBSInfo>();
 							try {
-								String gaode = share.getString("gaode", "");
-								lbss.put(new JSONObject(gaode));
-								String baidu = share.getString("baidu", "");
-								lbss.put(new JSONObject(baidu));
-								String tencent = share.getString("tencent", "");
-								lbss.put(new JSONObject(tencent));
+								ArrayList<String> names = new ArrayList<String>();
+								names.add("gaode");
+								names.add("baidu");
+								names.add("tencent");
+								for (String name : names ){
+									String lbsinfo = share.getstring("exam", name);
+									LBSInfo lbs = new LBSInfo();
+									lbs.lat = new JSONObject(lbsinfo).getDouble("lat");
+									lbs.lng = new JSONObject(lbsinfo).getDouble("lng");
+									lbss.add(lbs);
+								}
 							} catch (JSONException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							if(jarray.length()!=0){
-								JSONObject rec = new JSONObject();
-								try {
-									
-									rec.put("poiinfo", jarray);
-									rec.put("lbsinfo", lbss.toString());
-									rec.put("date", date);
-									String userid = null;
-									try {
-										userid = URLEncoder.encode(share.getString("id", ""),"utf-8");
-									} catch (UnsupportedEncodingException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									rec.put("userid",userid);
-								} catch (JSONException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								recs.put(rec);
-								Log.e("rec", recs.toString());
-								Editor edit = share.edit();
-								edit.putString("records", recs.toString());
-								edit.commit();
-								Shownotification(context);
-							}
+							rec_info.lbss = lbss;
 						}
-//						Message message = new Message();
-//						Bundle bundle = new Bundle();
-//						bundle.putString("type", "pois");
-//						bundle.putString("pois",jarray.toString());
-//						message.setData(bundle);
-//						callback.handleMessage(message);
+						if(rec_info.pois.size()!=0){
+							rec_info.date = date;
+							String userid = null;
+							try {
+								userid = URLEncoder.encode(share.getstring("exam", "id"),"utf-8");
+							} catch (UnsupportedEncodingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							rec_info.userid = userid;
+							Shownotification(context);
+						}
+						Records_info_mid rec_mid = Records_info_mid.getpoiinfomid(context);
+						rec_mid.getRecinfos();
+						rec_mid.addrecs(rec_info);
 					}
 				}
+
 			}
 	});
 	poisearch.setBound(new SearchBound(point, (int) error));
 	poisearch.searchPOIAsyn();
 }
-	
-	public static void Shownotification(Context context) {
-//		 String ns = Context.NOTIFICATION_SERVICE;
+//		Message message = new Message();
+//		Bundle bundle = new Bundle();
+//		bundle.putString("type", "pois");
+//		bundle.putString("pois",jarray.toString());
+//		message.setData(bundle);
+//		callback.handleMessage(message);
+// 		 String ns = Context.NOTIFICATION_SERVICE;
 //		 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
 //		 int icon = com.example.kepler.R.drawable.ic_launcher; //֪ͨͼ��
 //		 CharSequence tickerText = "Notice from Kepler"; //״̬����ʾ��֪ͨ�ı���ʾ
@@ -164,5 +142,7 @@ public class getpoi {
 //		 PendingIntent contentIntent = PendingIntent.getActivity(context,0,notificationIntent,0);
 //		 notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 //		 mNotificationManager.notify(0,notification);// TODO Auto-generated method stub
+	public static void Shownotification(Context context) {
+
 	}
 }
