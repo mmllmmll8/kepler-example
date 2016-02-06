@@ -37,7 +37,7 @@ public class MainService extends Service{
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
 		//Bundle bundle =  intent.getBundleExtra("username");
-		Log.e("ok", "okokokokokok");
+		Log.e("service", "service start");
 		SharedPreferences share = getSharedPreferences("exam",0);
 		Editor editor = share.edit();
 		editor.commit();
@@ -52,13 +52,14 @@ public class MainService extends Service{
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		baidu_server.stop();
-		Log.e("ok", "nonononono");
+		Log.i("service", "service stop");
 		SharedPreferences share = getSharedPreferences("exam",0);
 		Editor editor = share.edit();
 		editor.commit();
 	}
 	
 	private void init(Context context,mycallback callback){
+		Log.i("service","service init");
 //		baidu_server = new baidu(context,callback);
 //		baidu_server.start();
 //		tencent_server = new tencent(context,callback);

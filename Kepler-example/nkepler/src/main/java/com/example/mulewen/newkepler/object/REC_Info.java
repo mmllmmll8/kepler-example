@@ -5,10 +5,10 @@ import java.util.ArrayList;
 public class REC_Info {
 	//��λ�б�
 	//poi���б�
-	String date;
-	String id;
-	String lbsinfo;
-	String poiinfo;
-	ArrayList<POI_Info> pois;
-	ArrayList<LBSInfo> lbss;
+	public String date;
+	public String userid;
+	public String lbsinfo;
+	public String poiinfo;
+	public ArrayList<POI_Info> pois;
+	public ArrayList<LBSInfo> lbss;
 }

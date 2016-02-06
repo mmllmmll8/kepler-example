@@ -45,6 +45,7 @@ public class getpoi {
 				"050100|050200|050300|050400|050500|050600|050700|140500|" +
 				"050800|050900|060100|060200|060300|060400|060600|060700|190403|" +
 				"060800|080100|080200|080300|080500|080600|090100|120300|120303", city);
+		Log.i("getpoi","start");
         query.setPageSize(30);
 		PoiSearch poisearch = new PoiSearch(context, query);
 		poisearch.setOnPoiSearchListener(new OnPoiSearchListener(){
@@ -123,25 +124,7 @@ public class getpoi {
 	poisearch.setBound(new SearchBound(point, (int) error));
 	poisearch.searchPOIAsyn();
 }
-//		Message message = new Message();
-//		Bundle bundle = new Bundle();
-//		bundle.putString("type", "pois");
-//		bundle.putString("pois",jarray.toString());
-//		message.setData(bundle);
-//		callback.handleMessage(message);
-// 		 String ns = Context.NOTIFICATION_SERVICE;
-//		 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-//		 int icon = com.example.kepler.R.drawable.ic_launcher; //֪ͨͼ��
-//		 CharSequence tickerText = "Notice from Kepler"; //״̬����ʾ��֪ͨ�ı���ʾ
-//		 long when = System.currentTimeMillis(); //֪ͨ������ʱ�䣬����֪ͨ��Ϣ����ʾ
-//		 //����������Գ�ʼ�� Nofification
-//		 Notification notification = new Notification(icon,tickerText,when);
-//	     CharSequence contentTitle = "New location!"; //֪ͨ������
-//		 CharSequence contentText = "New sites needed to be signed!"; //֪ͨ������
-//		 Intent notificationIntent = new Intent(context,List.class); //�����֪ͨ��Ҫ��ת��Activity
-//		 PendingIntent contentIntent = PendingIntent.getActivity(context,0,notificationIntent,0);
-//		 notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-//		 mNotificationManager.notify(0,notification);// TODO Auto-generated method stub
+
 	public static void Shownotification(Context context) {
 
 	}
