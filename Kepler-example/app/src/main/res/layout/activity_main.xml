@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.experiment.MainActivity"
+    tools:context="com.example.mulewen.kepler_example_as.activity.MainActivity"
     android:background="#C0C0C0" >
 
 	<Button
@@ -14,15 +14,6 @@
 	    android:text="记录列表"
 	    android:textSize="50dp" />
 
-	<Button
-	    android:id="@+id/endbutton"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentTop="true"
-	    android:layout_centerHorizontal="true"
-	    android:layout_marginTop="145dp"
-	    android:text="结束服务"
-	    android:textSize="50dp" />
 	
 	<TextView 
         android:id="@+id/nametext"

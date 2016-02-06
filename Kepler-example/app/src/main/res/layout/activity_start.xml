@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#C0C0C0"
-    tools:context="com.example.experiment.StartActivity" >
+    tools:context="com.example.mulewen.kepler_example_as.activity.StartActivity" >
 
     <ImageView
         android:id="@+id/imageView1"

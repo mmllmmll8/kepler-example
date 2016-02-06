@@ -47,34 +47,4 @@ public class MainActivity extends Activity {
 
     }
 }
-//        controlbutton = (Button)findViewById(R.id.endbutton);
-//        Intent intent = new Intent(MainActivity.this,Map_Activity.class);
-//		startActivity(intent);
-//        	controlbutton.setText("�رշ���");
-//        controlbutton.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View arg0) {
-//				// TODO Auto-generated method stub
-//				service_close = !ServiceState.serviceisrunning(context);
-// 				if(service_close){
-//					Intent intent=new Intent(MainActivity.this,MainService.class);
-//					intent.setAction("com.example.kepler.service.MainService");
-//					startService(intent);
-//					controlbutton.setText("�رշ���");
-//				}else{
-//					Intent intent=new Intent(MainActivity.this,MainService.class);
-//					intent.setAction("com.example.kepler.service.MainService");
-//					boolean a = stopService(intent);
-// 					if(!a){
-//						intent=new Intent(MainActivity.this,MainService.class);
-//						intent.setAction("com.example.kepler.service.MainService");
-//						startService(intent);
-//						controlbutton.setText("�رշ���");
-//					}
-//					else{
-//						controlbutton.setText("��������");
-//					}
-//				}
-//			}
-//		});
+
