@@ -89,6 +89,7 @@ public class Records_info_mid implements Middledata{
             hasmap.put("value",jrecs.toString());
             update.add(hasmap);
             Datacenter.getDatacenter(context).getshared().Savedata(update,"exam");
+            rechaschange = false;
         }
         if(nrechaschange==true){
             //新增nrec原生数据存入
@@ -122,6 +123,7 @@ public class Records_info_mid implements Middledata{
             hasmap.put("value",njrecs.toString());
             update.add(hasmap);
             Datacenter.getDatacenter(context).getshared().Savedata(update,"exam");
+            nrechaschange = false;
         }
     }
 
@@ -130,7 +132,7 @@ public class Records_info_mid implements Middledata{
         if(nrecinfos==null) {
             nrecinfos = new ArrayList<REC_Info>();
         }
-        this.nrecinfos.add(nrec);
+        nrecinfos.add(nrec);
     }
 
     public void addrecs(REC_Info rec){
@@ -138,14 +140,13 @@ public class Records_info_mid implements Middledata{
         if(recinfos==null) {
             recinfos = new ArrayList<REC_Info>();
         }
-        this.recinfos.add(rec);
+        recinfos.add(rec);
     }
 
     @Override
     public void ini() {
         inirecinfos("records");
         inirecinfos("nrecs");
-
     }
 
     private void inirecinfos(String valuename){
@@ -155,37 +156,42 @@ public class Records_info_mid implements Middledata{
         JSONArray jrecords = null;
         REC_Info recinfo = null;
         try {
-            jrecords = new JSONArray(records);
-            for(int i = 0;i<jrecords.length();i++){
-                recinfo = new REC_Info();
-                JSONObject jobject = jrecords.getJSONObject(i);
-                ArrayList<POI_Info> pois = new ArrayList<POI_Info>();
-                ArrayList<LBSInfo> lbss = new ArrayList<LBSInfo>();
-                recinfo.date = jobject.getString("date");
-                recinfo.userid = jobject.getString("userid");
-                JSONArray jpois = jobject.getJSONArray("poiinfo");
-                JSONArray jlbs = jobject.getJSONArray("lbsinfo");
-                for (int z = 0;z<jlbs.length();z++){
-                    LBSInfo lbs = new LBSInfo();
-                    lbs.lat = jpois.getJSONObject(z).getDouble("lat");
-                    lbs.lng = jpois.getJSONObject(z).getDouble("lng");
-                    lbss.add(lbs);
-                }
-                recinfo.lbss = lbss;
+            if(!records.equalsIgnoreCase("")){
+                jrecords = new JSONArray(records);
+                for(int i = 0;i<jrecords.length();i++){
+                    recinfo = new REC_Info();
+                    JSONObject jobject = jrecords.getJSONObject(i);
+                    ArrayList<POI_Info> pois = new ArrayList<POI_Info>();
+                    ArrayList<LBSInfo> lbss = new ArrayList<LBSInfo>();
+                    recinfo.date = jobject.getString("date");
+                    recinfo.userid = jobject.getString("userid");
+                    JSONArray jpois = jobject.getJSONArray("poiinfo");
+                    JSONArray jlbss = jobject.getJSONArray("lbsinfo");
+                    for (int z = 0;z<jlbss.length();z++){
+                        LBSInfo lbs = new LBSInfo();
+                        JSONObject jlbs = jlbss.getJSONObject(z);
+                        lbs.lat = jlbs.getDouble("lat");
+                        lbs.lng = jlbs.getDouble("lng");
+                        lbss.add(lbs);
+                    }
+                    recinfo.lbss = lbss;
 
-                for (int z = 0;z<jpois.length();z++){
-                    POI_Info poi = new POI_Info();
-                    poi.id = jpois.getJSONObject(z).getString("id");
-                    poi.lat = jpois.getJSONObject(z).getDouble("lat");
-                    poi.lng = jpois.getJSONObject(z).getDouble("lng");
-                    poi.type = jpois.getJSONObject(z).getString("type");
-                    pois.add(poi);
-                }
-                recinfo.pois = pois;
-                if(valuename=="records"){
-                    recinfos.add(recinfo);
-                }else {
-                    nrecinfos.add(recinfo);
+                    for (int z = 0;z<jpois.length();z++){
+                        POI_Info poi = new POI_Info();
+                        JSONObject jpoi = jpois.getJSONObject(z);
+                        poi.id = jpoi.getString("id");
+                        poi.lat = jpoi.getDouble("lat");
+                        poi.lng = jpoi.getDouble("lng");
+                        poi.type = jpoi.getString("type");
+                        poi.name = jpoi.getString("name");
+                        pois.add(poi);
+                    }
+                    recinfo.pois = pois;
+                    if(valuename=="records"){
+                        recinfos.add(recinfo);
+                    }else {
+                        nrecinfos.add(recinfo);
+                    }
                 }
             }
 

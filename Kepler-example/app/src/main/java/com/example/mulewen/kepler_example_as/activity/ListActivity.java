@@ -30,12 +30,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.mulewen.kepler_example_as.R;
+import com.example.mulewen.newkepler.framework.Records_info_mid;
+import com.example.mulewen.newkepler.object.POI_Info;
+import com.example.mulewen.newkepler.object.REC_Info;
 
 public class ListActivity extends Activity {
 	
 	private ListView lv;
 	private List<Map<String, Object>> data;
 	private SharedPreferences sharedpreference;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,62 +50,35 @@ public class ListActivity extends Activity {
 		
 	}
 	
-	private List<Map<String, Object>> getData(String json)
+	private List<Map<String, Object>> getData(ArrayList<REC_Info> recarraylist)
     {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();  
         Map<String, Object> map; 
-		
-			JSONArray jsonarray = null;
+
+		int i = 0;
+		while(i<recarraylist.size()){
+			REC_Info rec_info = recarraylist.get(i);
+			map = new HashMap<String, Object>();
+			String loc = "";
+			String info = "";
 			try {
-				jsonarray = new JSONArray(json);
-			} catch (JSONException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				POI_Info poi = rec_info.pois.get(0);
+				loc = URLDecoder.decode(poi.name,"utf-8");
+				info = URLDecoder.decode(poi.type,"utf-8");
+
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
 			}
-			int i = 0;
-			while(i<jsonarray.length()){
-				JSONObject rec = null;
-				try {
-					rec = jsonarray.getJSONObject(i);
-				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				JSONArray POIS = null;
-				try {
-					POIS = new JSONArray(rec.getString("poiinfo"));
-				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				map = new HashMap<String, Object>();
-				String name = "";
-				try {
-					name = URLDecoder.decode(POIS.getJSONObject(0).get("name").toString(),"utf-8");
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	            map.put("loc", name);
-	            try {
-					map.put("time", rec.getString("date"));
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	            map.put("info", rec.toString());
-	            list.add(map);
-				i++;
-			}
+			map.put("time", rec_info.date);
+			map.put("loc", loc);
+			map.put("info", info);
+			list.add(map);
+			i++;
+		}
 		
         return list;
     }
-	
-    //ViewHolder��̬��  
+
     static class ViewHolder  
     {    
         public TextView local;  
@@ -159,32 +136,28 @@ public class ListActivity extends Activity {
     	// TODO Auto-generated method stub
     	super.onResume();
     	setContentView(R.layout.activity_list);
-        lv = (ListView)findViewById(R.id.lv);  
-        
-        //��ȡ��Ҫ�󶨵��������õ�data��  
-        sharedpreference = getSharedPreferences("exam", MODE_PRIVATE);
-        String records = sharedpreference.getString("records", "");
-        if(records!=""){
-        	data = getData(records); 
-        	MyAdapter adapter = new MyAdapter(this);
-	        lv.setAdapter(adapter);  
-	        lv.setOnItemClickListener(new OnItemClickListener() {
-	
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-						long arg3) {
-					// TODO Auto-generated method stub
-					Map<String,Object> mapinfo = data.get((int) arg3);
-					String info = (String) mapinfo.get("info");
-					Bundle bundle = new Bundle();
-					bundle.putString("info", info);
-					bundle.putInt("index", (int) arg3);
-					Intent intent = new Intent(ListActivity.this,CorrectActivity.class);
-					intent.putExtras(bundle);
-					startActivity(intent);
-				}
-			});       	
-        }
+        lv = (ListView)findViewById(R.id.lv);
+		Records_info_mid recmid = Records_info_mid.getpoiinfomid(this);
+		data = getData(recmid.getRecinfos());
+		MyAdapter adapter = new MyAdapter(this);
+		lv.setAdapter(adapter);
+		lv.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+									long arg3) {
+				// TODO Auto-generated method stub
+				Map<String,Object> mapinfo = data.get((int) arg3);
+				String info = (String) mapinfo.get("info");
+				Bundle bundle = new Bundle();
+				bundle.putString("info", info);
+				bundle.putInt("index", (int) arg3);
+				Intent intent = new Intent(ListActivity.this,CorrectActivity.class);
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}
+		});
+
     }
 }
 //try {

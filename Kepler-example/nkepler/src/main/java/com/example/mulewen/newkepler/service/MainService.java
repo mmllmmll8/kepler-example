@@ -22,7 +22,7 @@ public class MainService extends Service{
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
-		
+		Log.e("caonima", "service binder");
 		return null;
 	}
 	
@@ -52,14 +52,14 @@ public class MainService extends Service{
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		baidu_server.stop();
-		Log.i("service", "service stop");
+		Log.e("service", "service stop");
 		SharedPreferences share = getSharedPreferences("exam",0);
 		Editor editor = share.edit();
 		editor.commit();
 	}
 	
 	private void init(Context context,mycallback callback){
-		Log.i("service","service init");
+		Log.e("service","service init");
 //		baidu_server = new baidu(context,callback);
 //		baidu_server.start();
 //		tencent_server = new tencent(context,callback);

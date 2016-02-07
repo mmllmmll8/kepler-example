@@ -45,7 +45,7 @@ public class getpoi {
 				"050100|050200|050300|050400|050500|050600|050700|140500|" +
 				"050800|050900|060100|060200|060300|060400|060600|060700|190403|" +
 				"060800|080100|080200|080300|080500|080600|090100|120300|120303", city);
-		Log.i("getpoi","start");
+		Log.e("getpoi","start");
         query.setPageSize(30);
 		PoiSearch poisearch = new PoiSearch(context, query);
 		poisearch.setOnPoiSearchListener(new OnPoiSearchListener(){
@@ -81,41 +81,47 @@ public class getpoi {
 							rec_info.pois = pois;
 							//lbsinfo
 							//取出定位信息
-
 							ArrayList<LBSInfo> lbss = new ArrayList<LBSInfo>();
-							try {
-								ArrayList<String> names = new ArrayList<String>();
-								names.add("gaode");
-								names.add("baidu");
-								names.add("tencent");
-								for (String name : names ){
-									String lbsinfo = share.getstring("exam", name);
+							ArrayList<String> names = new ArrayList<String>();
+							names.add("gaode");
+							names.add("baidu");
+							names.add("tencent");
+
+							for (String name : names ){
+								String lbsinfo = share.getstring("exam", name);
+								if(!lbsinfo.equalsIgnoreCase("")){
 									LBSInfo lbs = new LBSInfo();
-									lbs.lat = new JSONObject(lbsinfo).getDouble("lat");
-									lbs.lng = new JSONObject(lbsinfo).getDouble("lng");
-									lbss.add(lbs);
+									try {
+										JSONObject jsonObject = new JSONObject(lbsinfo);
+										String lat =  jsonObject.getString("lat");
+										double caonima = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
+										caonima = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
+										lbs.lat = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
+										lbs.lng = Double.valueOf(new JSONObject(lbsinfo).getString("lng"));
+										lbss.add(lbs);
+									} catch (JSONException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
 								}
-							} catch (JSONException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
 							}
+
 							rec_info.lbss = lbss;
 						}
 						if(rec_info.pois.size()!=0){
 							rec_info.date = date;
-							String userid = null;
 							try {
-								userid = URLEncoder.encode(share.getstring("exam", "id"),"utf-8");
+								rec_info.userid =URLEncoder.encode(share.getstring("exam", "id"),"utf-8");
 							} catch (UnsupportedEncodingException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							rec_info.userid = userid;
 							Shownotification(context);
 						}
 						Records_info_mid rec_mid = Records_info_mid.getpoiinfomid(context);
 						rec_mid.getRecinfos();
 						rec_mid.addrecs(rec_info);
+						rec_mid.update();
 					}
 				}
 
@@ -129,3 +135,16 @@ public class getpoi {
 
 	}
 }
+//							try {
+//							JSONObject jsonObject = new JSONObject(lbsinfo);
+//							String lat =  jsonObject.getString("lat");
+//							double caonima = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
+//							caonima = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
+//							lbs.lat = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
+//							lbs.lng = Double.valueOf(new JSONObject(lbsinfo).getString("lng"));
+//							lbss.add(lbs);
+
+//							} catch (JSONException e1) {
+//								// TODO Auto-generated catch block
+//								e1.printStackTrace();
+//							}

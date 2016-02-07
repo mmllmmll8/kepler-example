@@ -34,13 +34,13 @@ public class gaode implements AMapLocationListener{
 	LatLng point;
 	double Accuracy;
 	String username = null;
-	int time = 10000;
-	int scantime = 1000*60;
+	int time = 1000;
+	int scantime = 1000*10;
 	int fanwei = 50;
 	Context context = null;
 	protected LocationManagerProxy mLocationManagerProxy;
 	Callback callback;
-	boolean lasttime = true;
+	static boolean lasttime;
 	SharedPreferences share = null;
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@SuppressLint("NewApi")
@@ -48,6 +48,7 @@ public class gaode implements AMapLocationListener{
 	{
 		this.context = activity;
 		this.callback = callback;
+		this.lasttime = true;
 		share = activity.getSharedPreferences("exam", 0);
 		StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
@@ -59,7 +60,7 @@ public class gaode implements AMapLocationListener{
 
 
 	protected void init() {
-		Log.i("gaode", "init");
+		Log.e("gaode", "init");
 		mLocationManagerProxy = LocationManagerProxy.getInstance(
 				this.context.getApplicationContext());
 
@@ -93,15 +94,17 @@ public class gaode implements AMapLocationListener{
 	        
 			edit.putString("gaode", gaode.toString());
 			edit.commit();
-	        Log.i("latlng", String.valueOf(geoLat)+" "+ String.valueOf(geoLng));
+	        Log.e("latlng", String.valueOf(geoLat)+" "+ String.valueOf(geoLng));
 	        LatLng nowll = new LatLng(geoLat, geoLng);
 	        //Accuracy = amapLocation.getAccuracy();
 	        Accuracy = amapLocation.getAccuracy();
 	        Accuracy=Accuracy<100?100:Accuracy;
 	        if(point!=null){
 	        	if((AMapUtils.calculateLineDistance(nowll,point)<=80)){
+
 	        		if(lasttime){
-	        			Log.i("latlng", "record");
+						lasttime = false;
+	        			Log.e("latlng", "record");
 			        	Date now=new Date();
 						String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now);
 						getpoi.start(
@@ -110,7 +113,6 @@ public class gaode implements AMapLocationListener{
 								new LatLonPoint(geoLat, geoLng),
 								city,
 								context);
-						lasttime = false;
 	        		}
 		        }
 	        	else{
@@ -120,30 +122,25 @@ public class gaode implements AMapLocationListener{
 			point = new LatLng(geoLat, geoLng);
 	    }
 	}
-	
+
+
 	@Override
-	public void onLocationChanged(Location arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onLocationChanged(Location location) {
+
 	}
 
 	@Override
-	public void onProviderDisabled(String arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void onProviderEnabled(String arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		// TODO Auto-generated method stub
-		
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+
 	}
 
+	@Override
+	public void onProviderEnabled(String provider) {
 
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+
+	}
 }
