@@ -1,13 +1,20 @@
 package com.example.mulewen.newkepler.tools;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.AllClientPNames;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,17 +31,23 @@ import android.os.Parcelable;
 import android.os.StrictMode;
 import android.util.Log;
 
+import com.example.mulewen.newkepler.framework.Records_info_mid;
+import com.example.mulewen.newkepler.object.REC_Info;
+
 public class NetworkConnectChangedReceiver extends BroadcastReceiver{
 	Thread thread ;
     static boolean laststate = true;
     SharedPreferences share = null;
     String content = null;
+    ArrayList<REC_Info> nrecinfos = null;
     @Override
     public void onReceive(final Context context, Intent intent) {
         share = context.getSharedPreferences("exam", 0);
         StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         content = share.getString("nrecs", "");
+        nrecinfos = Records_info_mid.getpoiinfomid(context).getNrecinfos();
+
         // 这个监听wifi的连接状态即是否连上了一个有效无线路由，当上边广播的状态是WifiManager.WIFI_STATE_DISABLING，和WIFI_STATE_DISABLED的时候，根本不会接到这个广播。
         // 在上边广播接到广播是WifiManager.WIFI_STATE_ENABLED状态的同时也会接到这个广播，当然刚打开wifi肯定还没有连接到有效的无线
         if (content!=""&&WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
@@ -60,32 +73,24 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver{
                 // TODO Auto-generated method stub
             	Log.e("haha", "ahahahah");
                 try {
-                	JSONArray info = new JSONArray(content);
-                	JSONObject jsonobject = new JSONObject();
-                	jsonobject.put("type","record");
-                	JSONArray jarray = new JSONArray();
-                	jsonobject.put("data",info);
-                	String strUTF8 = jsonobject.toString();
-
                 	HttpClient httpClient=new DefaultHttpClient();
-                	httpClient.getParams().setParameter(AllClientPNames.HTTP_CONTENT_CHARSET, "utf-8");
-                	HttpPost post = new HttpPost("http://192.168.1.217:8080/kepler-server/SendData");
-                	StringEntity entity = new StringEntity(strUTF8);
-                	entity.setContentEncoding("utf-8");
+                	HttpPost post = new HttpPost("http://121.42.136.178:8080/kepler-server/SendData");
+                    List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+                    formparams.add(new BasicNameValuePair("data", content));
+                    formparams.add(new BasicNameValuePair("type", "record"));
+                    UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formparams,"utf-8");
+                    entity.setContentType("application/x-www-form-urlencoded;charset=utf-8");
                 	post.setEntity(entity);
                     HttpResponse response=httpClient.execute(post);
                     if(response.getStatusLine().getStatusCode()==200)
                     {
-                    	Editor editer = share.edit();
-                    	editer.putString("nrecs", "");
-                    	editer.commit();
+//                      nrecinfos = new ArrayList<REC_Info>();
+//                    	Editor editer = share.edit();
+//                    	editer.putString("nrecs", "");
+//                    	editer.commit();
                     }
                     Log.e("haha",String.valueOf(response.getStatusLine().getStatusCode()));
-                } 
-                catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } 
+                }
                 catch (IOException e) {
                         // TODO Auto-generated catch block
                 	Log.e("haha", e.getMessage()); 

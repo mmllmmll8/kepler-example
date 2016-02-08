@@ -31,7 +31,7 @@ public class StartActivity extends Activity {
 			public void run() {
 				// TODO Auto-generated method stub
 				try {
-					Thread.sleep(3000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -40,12 +40,10 @@ public class StartActivity extends Activity {
 		        String id = share.getString("id", "");
 		        
 		        if(id==""){
-		        	//����һ��ע�����
 		        	Intent intent = new Intent(StartActivity.this,Register.class);
 		        	startActivity(intent);
 		        	finish();
 		        }else{
-		        	//����main_activity
 		        	boolean isclose = !ServiceState.serviceisrunning(activity);
 		        	if(isclose){
 		        		Intent intent = new Intent(StartActivity.this,MainService.class);

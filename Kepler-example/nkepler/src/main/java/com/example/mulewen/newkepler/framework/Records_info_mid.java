@@ -15,8 +15,8 @@ import java.util.HashMap;
  */
 public class Records_info_mid implements Middledata{
 
-    ArrayList<REC_Info> recinfos = null;
-    ArrayList<REC_Info> nrecinfos = null;
+    private ArrayList<REC_Info> recinfos = null;
+    private ArrayList<REC_Info> nrecinfos = null;
     private static Records_info_mid records_info_mid = null;
     private Context context = null;
     private boolean rechaschange = false;
@@ -24,10 +24,9 @@ public class Records_info_mid implements Middledata{
 
     public static Records_info_mid getpoiinfomid(Context context){
         if(records_info_mid==null){
-            return new Records_info_mid(context);
-        }else {
-            return records_info_mid;
+            records_info_mid = new Records_info_mid(context);
         }
+        return records_info_mid;
     }
 
     private Records_info_mid(Context context){
@@ -74,8 +73,8 @@ public class Records_info_mid implements Middledata{
                         jlbs.put("lat",lbs.lat);
                         jlbss.put(jlbs);
                     }
-                    jrec.put("lbsinfo",jlbss);
-                    jrec.put("poiinfo",jpois);
+                    jrec.put("lbsinfo",jlbss.toString());
+                    jrec.put("poiinfo",jpois.toString());
                     jrec.put("userid",rec.userid);
                     jrec.put("date",rec.date);
                     jrecs.put(jrec);
@@ -93,13 +92,14 @@ public class Records_info_mid implements Middledata{
         }
         if(nrechaschange==true){
             //新增nrec原生数据存入
-            JSONArray njrecs = new JSONArray();
+             JSONArray njrecs = new JSONArray();
             for (REC_Info rec:nrecinfos
                     ) {
                 JSONObject jrec = new JSONObject();
                 JSONArray jarray = new JSONArray();
+                JSONArray jlbss = new JSONArray();
                 try {
-                    for (POI_Info poi:rec.pois
+                      for (POI_Info poi:rec.pois
                             ) {
                         JSONObject jpoi = new JSONObject();
                         jpoi.put("type",poi.type);
@@ -109,7 +109,15 @@ public class Records_info_mid implements Middledata{
                         jpoi.put("name",poi.name);
                         jarray.put(jpoi);
                     }
-                    jrec.put("poiinfo",jarray);
+                    for (LBSInfo lbs:rec.lbss
+                            ) {
+                        JSONObject jlbs = new JSONObject();
+                        jlbs.put("lng",lbs.lng);
+                        jlbs.put("lat",lbs.lat);
+                        jlbss.put(jlbs);
+                    }
+                    jrec.put("lbsinfo",jlbss.toString());
+                    jrec.put("poiinfo",jarray.toString());
                     jrec.put("userid",rec.userid);
                     jrec.put("date",rec.date);
                     njrecs.put(jrec);
@@ -165,8 +173,8 @@ public class Records_info_mid implements Middledata{
                     ArrayList<LBSInfo> lbss = new ArrayList<LBSInfo>();
                     recinfo.date = jobject.getString("date");
                     recinfo.userid = jobject.getString("userid");
-                    JSONArray jpois = jobject.getJSONArray("poiinfo");
-                    JSONArray jlbss = jobject.getJSONArray("lbsinfo");
+                    JSONArray jpois = new JSONArray(jobject.getString("poiinfo"));
+                    JSONArray jlbss = new JSONArray(jobject.getString("lbsinfo"));
                     for (int z = 0;z<jlbss.length();z++){
                         LBSInfo lbs = new LBSInfo();
                         JSONObject jlbs = jlbss.getJSONObject(z);
@@ -194,12 +202,8 @@ public class Records_info_mid implements Middledata{
                     }
                 }
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
-
-
 }

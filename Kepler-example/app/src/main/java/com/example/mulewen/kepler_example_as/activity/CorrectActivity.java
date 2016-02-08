@@ -31,14 +31,17 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.example.mulewen.kepler_example_as.R;
+import com.example.mulewen.newkepler.framework.Records_info_mid;
+import com.example.mulewen.newkepler.object.POI_Info;
+import com.example.mulewen.newkepler.object.REC_Info;
 
 
 public class CorrectActivity extends Activity{
 	private ListView lv;
 	private List<Map<String, Object>> data;
-	private SharedPreferences sharedpreference;
 	private int recordindex = 0;
 	private int poiindex = 0;
+	private Records_info_mid records_mid = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,67 +49,41 @@ public class CorrectActivity extends Activity{
 		this.getWindow().setFlags(
 				WindowManager.LayoutParams.FLAG_FULLSCREEN,  
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
+		records_mid = Records_info_mid.getpoiinfomid(this);
 		setContentView(R.layout.activity_correct);
         lv = (ListView)findViewById(R.id.correct);
-        sharedpreference = getSharedPreferences("exam",MODE_PRIVATE);
-        
         AlertDialog.Builder normalDia=new AlertDialog.Builder(CorrectActivity.this);
-        
         normalDia.setIcon(R.drawable.ic_launcher);  
         normalDia.setTitle("poi选择");
         normalDia.setMessage("确认选择？");
         
         normalDia.setPositiveButton("不是", new DialogInterface.OnClickListener() {
-            @Override  
+
+            @Override
             public void onClick(DialogInterface dialog, int which) {  
                 
             }  
         });  
         normalDia.setNegativeButton("是", new DialogInterface.OnClickListener() {
+
             @SuppressLint("NewApi") @Override  
             public void onClick(DialogInterface dialog, int which) {  
                 // TODO Auto-generated method stub  
             	Map<String,Object>poi = data.get(poiindex);
-				Editor edit = sharedpreference.edit();
-            	try {
-            		String record = sharedpreference.getString("records", "");
-            		JSONArray jrecords = new JSONArray(record);
-            		JSONObject jobject = (JSONObject) jrecords.get(recordindex);
-					if(poi.get("info")!=""){
-			        	JSONArray pois = jobject.getJSONArray("poiinfo");
-			        	JSONObject index = new JSONObject();
-			        	index.put("index", poiindex);
-			        	pois.put(index);
-			        	jobject.put("poiinfo", pois.toString());
-						String nrecs = sharedpreference.getString("nrecs", "");
-						JSONArray njrecs = null;
-						if(nrecs==""){
-							njrecs = new JSONArray();
-						}
-						else{
-							njrecs = new JSONArray(nrecs);
-						}
-						njrecs.put(jobject);
-						
-						edit.putString("nrecs", njrecs.toString());
-					}
-		        	jrecords.remove(recordindex);
-			        edit.putString("records", jrecords.toString());
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+                REC_Info choose = records_mid.getRecinfos().remove(recordindex);
+				if(poi.get("info")!=""){
+                    choose.pois.add(0,choose.pois.get(poiindex));
+                    records_mid.addnrecs(choose);
+                    records_mid.update();
 				}
-				edit.commit();
 				finish();
             }  
         }); 
         final AlertDialog dlg = normalDia.create();
-        
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
-        data = getData(bundle.getString("info"));
         recordindex = bundle.getInt("index");
+        data = getData(records_mid.getRecinfos().get(recordindex).pois);
         MyAdapter adapter = new MyAdapter(this);
         lv.setAdapter(adapter);  
         lv.setOnItemClickListener(new OnItemClickListener() {
@@ -121,44 +98,30 @@ public class CorrectActivity extends Activity{
 			}
 		});
 	}
-	
-	private List<Map<String, Object>> getData(String json) 
+
+	private List<Map<String, Object>> getData(ArrayList<POI_Info> pois)
     {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();  
-        Map<String, Object> map; 
-		try {
-			JSONObject jsonobject = new JSONObject(json);
-		    JSONArray POIS =new JSONArray(jsonobject.getString("poiinfo"));
-		    int i = 0;
-			while(i<POIS.length()){
-				map = new HashMap<String, Object>();
-				String name = "";
-				try {
-					name = URLDecoder.decode(POIS.getJSONObject(i).get("name").toString(),"utf-8");
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				String type = "";
-				try {
-					type = URLDecoder.decode(POIS.getJSONObject(i).get("type").toString(),"utf-8");
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	            map.put("loc", name);
-	            map.put("info", type);
-	            list.add(map);
-				i++;
-			}
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Map<String, Object> map;
+		for (POI_Info poi:pois
+			 ) {
 			map = new HashMap<String, Object>();
-			map.put("loc", "都不是");
-            map.put("info", "");
-            list.add(map);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            String name = "";
+            String type = "";
+            try {
+                name = URLDecoder.decode(poi.name,"utf-8");
+                type = URLDecoder.decode(poi.type,"utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            map.put("loc", name);
+			map.put("info", type);
+			list.add(map);
 		}
+		map = new HashMap<String, Object>();
+		map.put("loc", "都不是");
+		map.put("info", "");
+		list.add(map);
         return list;
     }
 

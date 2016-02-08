@@ -16,7 +16,6 @@ public class Datacenter {
     public static Datacenter getDatacenter(Context context){
         if(datacenter==null){
             datacenter = new Datacenter(context);
-            return datacenter;
         }
         return datacenter;
     }

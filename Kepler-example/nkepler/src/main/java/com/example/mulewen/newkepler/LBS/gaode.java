@@ -35,7 +35,7 @@ public class gaode implements AMapLocationListener{
 	double Accuracy;
 	String username = null;
 	int time = 1000;
-	int scantime = 1000*10;
+	int scantime = 1000*60;
 	int fanwei = 50;
 	Context context = null;
 	protected LocationManagerProxy mLocationManagerProxy;
