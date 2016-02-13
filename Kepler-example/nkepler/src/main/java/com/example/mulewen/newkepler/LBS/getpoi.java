@@ -5,10 +5,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
@@ -22,14 +20,7 @@ import com.example.mulewen.newkepler.framework.Records_info_mid;
 import com.example.mulewen.newkepler.object.LBSInfo;
 import com.example.mulewen.newkepler.object.POI_Info;
 import com.example.mulewen.newkepler.object.REC_Info;
-
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 public class getpoi {
@@ -46,7 +37,7 @@ public class getpoi {
 				"050800|050900|060100|060200|060300|060400|060600|060700|190403|" +
 				"060800|080100|080200|080300|080500|080600|090100|120300|120303", city);
 		Log.e("getpoi","start");
-        query.setPageSize(30);
+		query.setPageSize(30);
 		PoiSearch poisearch = new PoiSearch(context, query);
 		poisearch.setOnPoiSearchListener(new OnPoiSearchListener(){
 			@Override
@@ -63,6 +54,7 @@ public class getpoi {
 							ArrayList<POI_Info> pois = new ArrayList<POI_Info>();
 							Iterator itr = poiItems.iterator();
 							//poiinfo
+							//填充poi信息
 							while (itr.hasNext()) {
 								POI_Info poi = new POI_Info();
 								PoiItem nextObj = (PoiItem) itr.next();
@@ -80,9 +72,10 @@ public class getpoi {
 							}
 							rec_info.pois = pois;
 							//lbsinfo
-							//取出定位信息
+							//填充lbs信息
 							ArrayList<LBSInfo> lbss = new ArrayList<LBSInfo>();
 							ArrayList<String> names = new ArrayList<String>();
+
 							names.add("gaode");
 							names.add("baidu");
 							names.add("tencent");
@@ -92,10 +85,6 @@ public class getpoi {
 								if(!lbsinfo.equalsIgnoreCase("")){
 									LBSInfo lbs = new LBSInfo();
 									try {
-										JSONObject jsonObject = new JSONObject(lbsinfo);
-										String lat =  jsonObject.getString("lat");
-										double caonima = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
-										caonima = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
 										lbs.lat = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
 										lbs.lng = Double.valueOf(new JSONObject(lbsinfo).getString("lng"));
 										lbss.add(lbs);
@@ -105,7 +94,6 @@ public class getpoi {
 									}
 								}
 							}
-
 							rec_info.lbss = lbss;
 						}
 						if(rec_info.pois.size()!=0){
@@ -116,35 +104,18 @@ public class getpoi {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							Shownotification(context);
 						}
 						Records_info_mid rec_mid = Records_info_mid.getpoiinfomid(context);
 						rec_mid.getRecinfos();
 						rec_mid.addrecs(rec_info);
+						rec_mid.addnrecs(rec_info);
 						rec_mid.update();
 					}
 				}
-
 			}
-	});
-	poisearch.setBound(new SearchBound(point, (int) error));
-	poisearch.searchPOIAsyn();
-}
-
-	public static void Shownotification(Context context) {
-
+		});
+		poisearch.setBound(new SearchBound(point, (int) error));
+		poisearch.searchPOIAsyn();
 	}
-}
-//							try {
-//							JSONObject jsonObject = new JSONObject(lbsinfo);
-//							String lat =  jsonObject.getString("lat");
-//							double caonima = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
-//							caonima = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
-//							lbs.lat = Double.valueOf(new JSONObject(lbsinfo).getString("lat"));
-//							lbs.lng = Double.valueOf(new JSONObject(lbsinfo).getString("lng"));
-//							lbss.add(lbs);
 
-//							} catch (JSONException e1) {
-//								// TODO Auto-generated catch block
-//								e1.printStackTrace();
-//							}
+}
