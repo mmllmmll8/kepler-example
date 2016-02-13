@@ -29,7 +29,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-
 import com.example.mulewen.kepler_example_as.R;
 import com.example.mulewen.newkepler.framework.Records_info_mid;
 import com.example.mulewen.newkepler.object.POI_Info;
