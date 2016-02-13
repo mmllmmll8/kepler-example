@@ -28,35 +28,31 @@ import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps2d.AMapUtils;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.services.core.LatLonPoint;
+import com.example.mulewen.newkepler.framework.Datacenter;
+import com.example.mulewen.newkepler.framework.Datashare;
 
 public class gaode implements AMapLocationListener{
 
 	LatLng point;
 	double Accuracy;
-	String username = null;
-	int time = 1000;
-	int scantime = 1000*60;
-	int fanwei = 50;
+	int scantime = 1000*60*3;
+	float scanwide = 80;
 	Context context = null;
 	protected LocationManagerProxy mLocationManagerProxy;
 	Callback callback;
 	static boolean lasttime;
-	SharedPreferences share = null;
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@SuppressLint("NewApi")
 	public gaode(Context activity,Callback callback)
 	{
 		this.context = activity;
 		this.callback = callback;
-		this.lasttime = true;
-		share = activity.getSharedPreferences("exam", 0);
+		this.lasttime = false;
 		StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 		init();
 	}
 
-	//list_to_json
-	
 
 
 	protected void init() {
@@ -67,22 +63,21 @@ public class gaode implements AMapLocationListener{
 		mLocationManagerProxy.requestLocationData(
 				LocationProviderProxy.AMapNetwork, 
 				scantime, 
-				80, 
+				scanwide,
 				this);
 		mLocationManagerProxy.setGpsEnable(true);
 	}
 
 	@Override
 	public void onLocationChanged(AMapLocation amapLocation) {
+		//
 		// TODO Auto-generated method stub
 		Log.e("ok", String.valueOf(amapLocation.getAMapException().getErrorCode()));
 		if(amapLocation != null && amapLocation.getAMapException().getErrorCode() == 0){
 
-		
 	        Double geoLat = amapLocation.getLatitude();
 	        Double geoLng = amapLocation.getLongitude();
 	        String city = amapLocation.getCityCode();
-	        Editor edit = share.edit();
 	        JSONObject gaode = new JSONObject();
 	        try {
 				gaode.put("lat", String.valueOf(geoLat));
@@ -91,42 +86,44 @@ public class gaode implements AMapLocationListener{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	        
-			edit.putString("gaode", gaode.toString());
-			edit.commit();
+			Datashare datashare = Datacenter.getDatacenter(context).getshared();
+			datashare.Savedata("gaode",gaode.toString(),"exam");
+
 	        Log.e("latlng", String.valueOf(geoLat)+" "+ String.valueOf(geoLng));
 	        LatLng nowll = new LatLng(geoLat, geoLng);
-	        //Accuracy = amapLocation.getAccuracy();
+			Log.e("now latlng", String.valueOf(datashare.getfloat("lat","exam"))+" "+ String.valueOf(datashare.getfloat("lng","exam")));
+			point = new LatLng(datashare.getfloat("lat","exam"),datashare.getfloat("lng","exam"));
 	        Accuracy = amapLocation.getAccuracy();
 	        Accuracy=Accuracy<100?100:Accuracy;
-	        if(point!=null){
-	        	if((AMapUtils.calculateLineDistance(nowll,point)<=80)){
+			if((AMapUtils.calculateLineDistance(nowll,point)<=120)){
+				if(lasttime){
+					lasttime = false;
+					Log.e("lasttime", "false");
+					Log.e("latlng", "record");
+					Date now=new Date();
+					String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now);
+					getpoi.start(
+							date,
+							Accuracy,
+							new LatLonPoint(geoLat, geoLng),
+							city,
+							context);
+				}
+			}else{
+				lasttime = true;
+				Log.e("lasttime", "true");
+			}
 
-	        		if(lasttime){
-						lasttime = false;
-	        			Log.e("latlng", "record");
-			        	Date now=new Date();
-						String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-						getpoi.start(
-								date, 
-								Accuracy,
-								new LatLonPoint(geoLat, geoLng),
-								city,
-								context);
-	        		}
-		        }
-	        	else{
-	        		lasttime = true;
-	        	}
-	        }
-			point = new LatLng(geoLat, geoLng);
+			Float lat = Float.valueOf(geoLat.toString());
+			Float lng = Float.valueOf(geoLng.toString());
+			datashare.Savedata("lat",lat,"exam");
+			datashare.Savedata("lng",lng,"exam");
 	    }
 	}
 
-
 	@Override
 	public void onLocationChanged(Location location) {
-
+		Log.e("latlng","2");
 	}
 
 	@Override
