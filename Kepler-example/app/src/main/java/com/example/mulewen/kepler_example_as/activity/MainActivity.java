@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Process;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +23,7 @@ public class MainActivity extends Activity {
 	Context context = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("TAG", "process id is " + Process.myPid());
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(
@@ -28,12 +31,7 @@ public class MainActivity extends Activity {
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         list = (Button)findViewById(R.id.listbutton);
-
         context = getApplicationContext();
-//        service_close = !ServiceState.serviceisrunning(context);
-//        if(service_close){
-//        	startService(new Intent(this,MainService.class));
-//        }
 
         list.setOnClickListener(new OnClickListener() {
 
