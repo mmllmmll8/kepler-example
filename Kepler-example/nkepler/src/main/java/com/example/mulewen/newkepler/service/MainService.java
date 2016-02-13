@@ -7,18 +7,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.IBinder;
+import android.os.Process;
 import android.util.Log;
 
 import com.example.mulewen.newkepler.LBS.baidu;
 import com.example.mulewen.newkepler.LBS.gaode;
 import com.example.mulewen.newkepler.LBS.tencent;
+import com.example.mulewen.newkepler.runnables.nrecs_runnable;
+import com.example.mulewen.newkepler.runnables.recs_runnable;
+import com.example.mulewen.newkepler.tools.NetworkConnectChangedReceiver;
+
+import java.util.ArrayList;
 
 public class MainService extends Service{
 	baidu baidu_server;
 	gaode gaode_server;
-	tencent tencent_server;
-	String userid;
-	
+
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -30,7 +34,7 @@ public class MainService extends Service{
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		
+		Log.d("TAG", "process id is " + Process.myPid());
 	}
 	
 	@Override
@@ -38,9 +42,6 @@ public class MainService extends Service{
 		// TODO Auto-generated method stub
 		//Bundle bundle =  intent.getBundleExtra("username");
 		Log.e("service", "service start");
-		SharedPreferences share = getSharedPreferences("exam",0);
-		Editor editor = share.edit();
-		editor.commit();
 		mycallback callback = new mycallback();
 		init(this.getApplicationContext(),callback);
 		flags = START_STICKY;  
@@ -53,16 +54,18 @@ public class MainService extends Service{
 		super.onDestroy();
 		baidu_server.stop();
 		Log.e("service", "service stop");
-		SharedPreferences share = getSharedPreferences("exam",0);
-		Editor editor = share.edit();
-		editor.commit();
 	}
 	
 	private void init(Context context,mycallback callback){
 		Log.e("service","service init");
-//		baidu_server = new baidu(context,callback);
-//		baidu_server.start();
-//		tencent_server = new tencent(context,callback);
 		gaode_server = new gaode(context,callback);
+		//填充wifi触发的runnable
+		ArrayList<Runnable> runnables = new ArrayList<Runnable>();
+		Runnable nrecs_Runnable = new nrecs_runnable(context);
+		runnables.add(nrecs_Runnable);
+		NetworkConnectChangedReceiver.setrunnables(runnables);
+		if(NetworkConnectChangedReceiver.isWifiConnected(context)){
+			NetworkConnectChangedReceiver.connectServer();
+		}
 	}
 }
