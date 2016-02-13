@@ -18,10 +18,10 @@ public class StartActivity extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		activity = this;
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);//ȥ������
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.getWindow().setFlags(
 				WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);//����ȫ�� 
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_start);
 		final SharedPreferences share = this.getSharedPreferences("exam",0);
 		Records_info_mid.getpoiinfomid(this);
