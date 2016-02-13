@@ -23,19 +23,46 @@ public class Datashare {
         }
     }
 
-    public boolean Savedata(ArrayList<HashMap> data,String sharename){
-        editor = shares.get(sharename).edit();
-        for (HashMap<String ,String> a: data
-                ) {
-            String name = a.get("name");
-            String value = a.get("value");
-            editor.putString(name,value);
+    public boolean Savedata(String name,float value,String sharename){
+        synchronized (this) {
+            editor = shares.get(sharename).edit();
+            editor.putFloat(name, value);
+            return editor.commit();
         }
-        return editor.commit();
+    }
+
+    public boolean Savedata(String name,String value,String sharename){
+        synchronized (this) {
+            editor = shares.get(sharename).edit();
+            editor.putString(name, value);
+            return editor.commit();
+        }
+    }
+
+    public float getfloat(String name,String sharename){
+        synchronized (this) {
+            SharedPreferences share = shares.get(sharename);
+            return share.getFloat(name, 0);
+        }
+    }
+
+    public boolean Savedata(ArrayList<HashMap> data,String sharename){
+        synchronized (this) {
+            editor = shares.get(sharename).edit();
+            for (HashMap<String, String> a : data
+                    ) {
+                String name = a.get("name");
+                String value = a.get("value");
+                editor.putString(name, value);
+            }
+            return editor.commit();
+        }
     }
 
     public String getstring(String sharename,String name){
-        SharedPreferences share = shares.get(sharename);
-        return share.getString(name,"");
+        synchronized (this) {
+            SharedPreferences share = shares.get(sharename);
+            return share.getString(name, "");
+        }
     }
 }
