@@ -9,6 +9,4 @@ public class mycallback implements Callback{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	
 }
