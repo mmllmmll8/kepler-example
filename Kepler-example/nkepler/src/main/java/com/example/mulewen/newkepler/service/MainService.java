@@ -4,17 +4,14 @@ package com.example.mulewen.newkepler.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.IBinder;
 import android.os.Process;
 import android.util.Log;
 
-import com.example.mulewen.newkepler.LBS.baidu;
-import com.example.mulewen.newkepler.LBS.gaode;
-import com.example.mulewen.newkepler.LBS.tencent;
+import com.example.mulewen.newkepler.lbs.baidu;
+import com.example.mulewen.newkepler.lbs.gaode;
+import com.example.mulewen.newkepler.runnables.lbss_runnable;
 import com.example.mulewen.newkepler.runnables.nrecs_runnable;
-import com.example.mulewen.newkepler.runnables.recs_runnable;
 import com.example.mulewen.newkepler.tools.NetworkConnectChangedReceiver;
 
 import java.util.ArrayList;
@@ -41,11 +38,11 @@ public class MainService extends Service{
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
 		//Bundle bundle =  intent.getBundleExtra("username");
+		super.onStartCommand(intent, flags, startId);
 		Log.e("service", "service start");
 		mycallback callback = new mycallback();
 		init(this.getApplicationContext(),callback);
-		flags = START_STICKY;  
-		return super.onStartCommand(intent, flags, startId);  
+		return START_STICKY;
 	}
 	
 	@Override
@@ -61,8 +58,8 @@ public class MainService extends Service{
 		gaode_server = new gaode(context,callback);
 		//填充wifi触发的runnable
 		ArrayList<Runnable> runnables = new ArrayList<Runnable>();
-		Runnable nrecs_Runnable = new nrecs_runnable(context);
-		runnables.add(nrecs_Runnable);
+		runnables.add(new nrecs_runnable(context));
+		runnables.add(new lbss_runnable(context));
 		NetworkConnectChangedReceiver.setrunnables(runnables);
 		if(NetworkConnectChangedReceiver.isWifiConnected(context)){
 			NetworkConnectChangedReceiver.connectServer();

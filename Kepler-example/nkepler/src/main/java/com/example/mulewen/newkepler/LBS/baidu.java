@@ -1,12 +1,11 @@
-package com.example.mulewen.newkepler.LBS;
+package com.example.mulewen.newkepler.lbs;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler.Callback;
-import android.os.Bundle;
-import android.os.Message;
+
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;

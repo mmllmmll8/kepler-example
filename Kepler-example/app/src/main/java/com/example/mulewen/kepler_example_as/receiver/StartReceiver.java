@@ -21,7 +21,7 @@ public class StartReceiver extends BroadcastReceiver	{
 			String name =sharedPreferences.getString("id", ""); 
 			if(name!=""){
 				arg0.startService(new Intent(arg0,MainService.class));
-				Toast.makeText(arg0, "ʵ���������", Toast.LENGTH_LONG).show();
+				Toast.makeText(arg0, "haha", Toast.LENGTH_LONG).show();
 			}  
         }   
 	}

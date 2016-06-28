@@ -1,4 +1,4 @@
-package com.example.mulewen.newkepler.LBS;
+package com.example.mulewen.newkepler.lbs;
 import android.content.Context;
 
 import com.amap.api.services.core.AMapException;

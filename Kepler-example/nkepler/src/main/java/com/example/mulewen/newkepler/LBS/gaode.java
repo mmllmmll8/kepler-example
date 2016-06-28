@@ -1,26 +1,19 @@
-package com.example.mulewen.newkepler.LBS;
+package com.example.mulewen.newkepler.lbs;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler.Callback;
-import android.os.Message;
 import android.os.StrictMode;
 import android.util.Log;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
+
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
@@ -30,6 +23,8 @@ import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.services.core.LatLonPoint;
 import com.example.mulewen.newkepler.framework.Datacenter;
 import com.example.mulewen.newkepler.framework.Datashare;
+import com.example.mulewen.newkepler.framework.LBS_info_mid;
+import com.example.mulewen.newkepler.object.LBSInfo;
 
 public class gaode implements AMapLocationListener{
 
@@ -41,6 +36,7 @@ public class gaode implements AMapLocationListener{
 	protected LocationManagerProxy mLocationManagerProxy;
 	Callback callback;
 	static boolean lasttime;
+	LBS_info_mid lbs_info_mid;
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@SuppressLint("NewApi")
 	public gaode(Context activity,Callback callback)
@@ -53,19 +49,19 @@ public class gaode implements AMapLocationListener{
 		init();
 	}
 
-
-
 	protected void init() {
 		Log.e("gaode", "init");
+
 		mLocationManagerProxy = LocationManagerProxy.getInstance(
 				this.context.getApplicationContext());
-
 		mLocationManagerProxy.requestLocationData(
 				LocationProviderProxy.AMapNetwork, 
 				scantime, 
 				scanwide,
 				this);
 		mLocationManagerProxy.setGpsEnable(true);
+
+		lbs_info_mid = LBS_info_mid.getlbsinfomid(context);
 	}
 
 	@Override
@@ -88,9 +84,11 @@ public class gaode implements AMapLocationListener{
 			}
 			Datashare datashare = Datacenter.getDatacenter(context).getshared();
 			datashare.Savedata("gaode",gaode.toString(),"exam");
-
 	        Log.e("latlng", String.valueOf(geoLat)+" "+ String.valueOf(geoLng));
 	        LatLng nowll = new LatLng(geoLat, geoLng);
+			Date now=new Date();
+			String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now);
+
 			Log.e("now latlng", String.valueOf(datashare.getfloat("lat","exam"))+" "+ String.valueOf(datashare.getfloat("lng","exam")));
 			point = new LatLng(datashare.getfloat("lat","exam"),datashare.getfloat("lng","exam"));
 	        Accuracy = amapLocation.getAccuracy();
@@ -100,8 +98,6 @@ public class gaode implements AMapLocationListener{
 					lasttime = false;
 					Log.e("lasttime", "false");
 					Log.e("latlng", "record");
-					Date now=new Date();
-					String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now);
 					getpoi.start(
 							date,
 							Accuracy,
@@ -113,6 +109,15 @@ public class gaode implements AMapLocationListener{
 				lasttime = true;
 				Log.e("lasttime", "true");
 			}
+			LBSInfo lbsInfo = new LBSInfo();
+			lbsInfo.userid = datashare.getstring("exam","userid");
+			lbsInfo.date = date;
+			lbsInfo.accuracy = Accuracy;
+			lbsInfo.lng = geoLng;
+			lbsInfo.lat = geoLat;
+			LBS_info_mid lbs_info_mid = LBS_info_mid.getlbsinfomid(context);
+			lbs_info_mid.addlbss(lbsInfo);
+			lbs_info_mid.update();
 
 			Float lat = Float.valueOf(geoLat.toString());
 			Float lng = Float.valueOf(geoLng.toString());

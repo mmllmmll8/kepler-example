@@ -1,4 +1,4 @@
-package com.example.mulewen.newkepler.LBS;
+package com.example.mulewen.newkepler.lbs;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

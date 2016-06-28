@@ -22,7 +22,6 @@ import com.example.mulewen.newkepler.object.REC_Info;
 public class nrecs_runnable implements Runnable{
 
     Context context = null;
-    String content = "";
     ArrayList<REC_Info> nrecinfos = null;
 
     public nrecs_runnable(Context context){
