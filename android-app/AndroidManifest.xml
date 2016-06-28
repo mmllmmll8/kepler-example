@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.experiment"
+    android:versionCode="1"
+    android:versionName="1.0" >
+    
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="22" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/eye"
+        android:label="@string/app_name" >
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="c0c25852326c6407d99a25efba66f6b9"/>
+        <receiver
+            android:name="receiver.StartReceiver"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="receiver.MobileNetworkState">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="receiver.BootReceiver">  
+            <intent-filter >  
+              <action android:name="android.intent.action.USER_PRESENT" />  
+            </intent-filter>  
+        </receiver>
+        <receiver android:name="receiver.NetworkConnectReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.example.kepler.tools.NetworkConnectChangedReceiver" >
+            <intent-filter android:priority="1000"> 
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+		<service 
+		     android:name="com.example.kepler.service.MainService">
+		    <intent-filter> 
+	                <action android:name="com.example.kepler.service.MainService" /> 
+	                <category android:name="android.intent.category.default" /> 
+	        </intent-filter> 
+		</service>
+        <activity
+            android:name=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".CorrectActivity" >
+        </activity>
+        <activity
+            android:name=".StartActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ListActivity">
+        </activity>
+        <activity
+            android:name=".Map_Activity">
+        </activity>
+        <activity
+            android:name=".Register" >
+        </activity>
+    </application>
+
+</manifest>
